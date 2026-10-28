@@ -1,0 +1,22 @@
+﻿@using AerolineaVIP.Models
+@model FinalCompra
+@{ ViewBag.Title = "Confirmación"; }
+@Html.Partial("_PasosCompra", (List<PasoCompra>)ViewBag.Pasos)
+<h1>Confirmación</h1>
+<div class="@Model.ClaseMensaje" role="status">@Model.Mensaje</div>
+<p><strong>Reserva:</strong> @Model.Codigo · Vence: @Model.Expiracion</p>
+<div class="d-flex flex-wrap gap-3 my-3">
+@foreach (var estado in Model.Estados) {
+    <div><strong>@estado.Etiqueta:</strong> <span class="@estado.Clase">@estado.Texto</span></div>
+}
+</div>
+@Html.Partial("_DetalleReserva", Model)
+<p class="h4">Total: USD @Model.Total</p>
+<p>Método: @Model.Metodo</p><p>Operación: @Model.Operacion</p>
+<div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-primary" href="@Url.Action("VerReserva", new { id = Model.ReservaId })">Ver reserva</a>
+    @if (Model.Pagada) { <a class="btn btn-primary" href="@Url.Action("Comprobante", new { id = Model.ReservaId })">Consultar comprobante</a> }
+    @if (Model.Reintentar) { <a class="btn btn-primary" href="@Url.Action("Pagar", new { id = Model.ReservaId })">Reintentar pago</a> }
+    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">Volver al inicio</a>
+</div>
+<p class="mt-3">Comprobantes académicos sin validez tributaria. Pagos simulados, sin impuestos.</p>

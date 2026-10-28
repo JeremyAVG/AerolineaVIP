@@ -20,7 +20,7 @@ Sistema web monolítico ASP.NET MVC 5 (.NET Framework 4.8.1) para compra, reserv
 
 ## REGLAS OBLIGATORIAS DEL DOCENTE
 
-1. **Autor**: Jeremy Vilaña. No debe aparecer ningún otro nombre de estudiante en código, vistas, pie de página ni documentos.
+1. **Autor**: Jeremy Vilaña. Por instrucción expresa del grupo, el pie de página muestra «Jeremy Alexander Vilaña Guamán · Amaro Benjamin Caiza Sandoval».
 2. **Vistas Razor**: primero `@using Namespace` y en la línea siguiente `@model Tipo`. NUNCA `@model Namespace.Completo.Tipo` en una sola línea.
    ```cshtml
    @using AerolineaVIP.Models
@@ -69,6 +69,12 @@ Roles: `SuperUsuario`, `Administrador`, `EmpleadoCounter`, `Cliente` (constantes
 Política de contraseñas: mínimo 8, mayúscula, minúscula, número y símbolo. Login con **nombre de usuario**. Registro público siempre crea `Cliente`; solo un SuperUsuario autenticado elige otro rol (validado en el servidor).
 
 ## Estado del proyecto
+
+**Actualización de trabajo:** las fases 1 y 2 y el flujo funcional de la FASE 3 fueron probados por el grupo en la máquina local. La FASE 3 solicitada agrupa las pantallas 4–12 (fases 3–5 originales y recuperación de acceso). Incluye DP-03 a DP-07 y DP-09 a DP-11; las políticas siguen siendo propuestas, no aprobaciones del docente. Se agregaron los ajustes de presentación solicitados: pasos activos, mapa adaptable, resúmenes, condiciones de reserva, dos destinos de confirmación, selección de marca por logos, vencimiento y código de seguridad solo para validación, numeración CNF/ACAD y confirmación con consulta de reserva y comprobantes. La tabla siguiente conserva la numeración original como referencia del plan previo.
+
+Implementado en esta FASE 3: resultados y disponibilidad mediante las vistas SQL, mapa de siete asientos, selección por tramo en Session, validación de pasajeros, reserva y asignaciones en una transacción, pago simulado y comprobantes CONFIRMACION/FACTURA. Recuperación genera un token sin enviar correo y mantiene una respuesta neutral. Pantalla 18 valida preparación y continuidad geográfica al asignar aeronave, con `MinutosPreparacion=60`. No se requieren scripts SQL adicionales.
+
+Verificación reproducible: `Pruebas/FlujoCompra.Integracion.ps1 -BaseUrl http://localhost:59817` con la aplicación en ejecución. Lee las cadenas locales de Web.config, usa las cuentas académicas iniciales, crea registros temporales y los elimina al finalizar. Cubre recuperación, tarifas, condiciones, datos opcionales, validaciones de tarjeta, reenvíos, pagos, numeración de comprobantes, expiración y venta dominical. El grupo autorizó expresamente incluir Web.config con `Data Source=.` y la cuenta académica local `sa/123` en el commit de FASE 3; no autorizó push.
 
 | Fase | Contenido | Estado |
 |---|---|---|

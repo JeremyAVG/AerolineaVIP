@@ -1,0 +1,10 @@
+﻿@using AerolineaVIP.Models
+@model List<PasoCompra>
+<nav aria-label="Pasos de compra" class="border rounded p-2 mb-3">
+    <ol class="nav nav-pills nav-fill gap-2">
+    @foreach (var paso in Model) {
+        <li class="nav-item"><span class="@paso.Clase" aria-current="@paso.Actual">@paso.Texto</span></li>
+    }
+    </ol>
+</nav>
+@if (TempData["ErrorCompra"] != null) { <div class="alert alert-warning" role="alert">@TempData["ErrorCompra"]</div> }

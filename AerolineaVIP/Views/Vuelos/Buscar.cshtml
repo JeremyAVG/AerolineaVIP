@@ -1,5 +1,6 @@
-@using AerolineaVIP.Models
+﻿@using AerolineaVIP.Models
 @model BusquedaVuelosViewModel
+@if (TempData["ErrorCompra"] != null) { <div class="alert alert-warning">@TempData["ErrorCompra"]</div> }
 @{
     ViewBag.Title = "Buscar vuelos";
 }
@@ -42,6 +43,10 @@
     </div>
 </div>
 
+<h2 class="h4 mt-4">Próximas salidas</h2>
+<div class="row g-3">
+@foreach (var opcion in Model.Sugerencias) { <div class="col-lg-6">@Html.Partial("_TarjetaVuelo", opcion)</div> }
+</div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/busqueda-vuelos.js"></script>

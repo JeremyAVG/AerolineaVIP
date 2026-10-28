@@ -1,0 +1,67 @@
+﻿@using AerolineaVIP.Models
+@model PagoCompra
+@{ ViewBag.Title = "Pago simulado"; }
+@Html.Partial("_PasosCompra", (List<PasoCompra>)ViewBag.Pasos)
+<h1>4. Pago simulado</h1>
+<div class="alert alert-warning">SIMULACIÓN ACADÉMICA. No se realiza ningún cobro real. Use datos ficticios. Una tarjeta terminada en 0000 se rechaza.</div>
+<p>Reserva: @Model.Reserva.CodigoReserva · Estado: @Model.Reserva.EstadoReservaCodigo</p>
+<p>Vence: @Model.Reserva.ExpiracionTexto · Total USD @Model.Reserva.ImporteVigente</p>
+@using (Html.BeginForm("Pagar", "Compra", FormMethod.Post, new { id = "formPago", autocomplete = "off" })) {
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ReservaId)
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <fieldset class="mb-3">
+        <legend class="h6">Método *</legend>
+        <div class="form-check form-check-inline">
+            @Html.RadioButtonFor(m => m.Metodo, "TARJETA_CREDITO", new { id = "metodoCredito", @class = "form-check-input", required = "required" })
+            <label class="form-check-label" for="metodoCredito">Tarjeta de crédito</label>
+        </div>
+        <div class="form-check form-check-inline">
+            @Html.RadioButtonFor(m => m.Metodo, "TARJETA_DEBITO", new { id = "metodoDebito", @class = "form-check-input", required = "required" })
+            <label class="form-check-label" for="metodoDebito">Tarjeta de débito</label>
+        </div>
+        @Html.ValidationMessageFor(m => m.Metodo)
+    </fieldset>
+    <fieldset>
+        <legend class="h6">Marca *</legend>
+        <div class="d-flex flex-wrap gap-3 my-3 marcas-tarjeta">
+            <label class="marca-opcion">@Html.RadioButtonFor(m => m.Marca, "VISA", new { required = "required", id = "marcaVisa", @class = "marca-radio", aria_label = "Visa" })<img src="@Url.Content("~/Content/marcas/visa.svg")" alt="Visa" /></label>
+            <label class="marca-opcion">@Html.RadioButtonFor(m => m.Marca, "MASTERCARD", new { id = "marcaMastercard", @class = "marca-radio", aria_label = "Mastercard" })<img src="@Url.Content("~/Content/marcas/mastercard.svg")" alt="Mastercard" /></label>
+            <label class="marca-opcion">@Html.RadioButtonFor(m => m.Marca, "AMEX", new { id = "marcaAmex", @class = "marca-radio", aria_label = "American Express" })<img src="@Url.Content("~/Content/marcas/amex.svg")" alt="American Express" /></label>
+            <label class="marca-opcion">@Html.RadioButtonFor(m => m.Marca, "DINERS", new { id = "marcaDiners", @class = "marca-radio", aria_label = "Diners Club" })<img src="@Url.Content("~/Content/marcas/diners.svg")" alt="Diners Club" /></label>
+        </div>
+        @Html.ValidationMessageFor(m => m.Marca)
+    </fieldset>
+    @Html.LabelFor(m => m.Numero, "Número ficticio de tarjeta *")
+    <input id="Numero" name="Numero" type="text" class="form-control solo-digitos" inputmode="numeric" required pattern="[0-9]{14,16}" maxlength="16" autocomplete="off" />
+    @Html.ValidationMessageFor(m => m.Numero)
+    <p id="longitudTarjeta">Visa y Mastercard: 16 dígitos; AMEX: 15; Diners: 14.</p>
+    @Html.LabelFor(m => m.Titular, "Titular *")
+    @Html.TextBoxFor(m => m.Titular, new { @class = "form-control", autocomplete = "off" })
+    <div class="row g-3 my-2">
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.Vencimiento, "Vencimiento MM/AA *")
+            <input id="Vencimiento" name="Vencimiento" type="text" class="form-control" inputmode="numeric" required pattern="(0[1-9]|1[0-2])/[0-9]{2}" maxlength="5" placeholder="MM/AA" autocomplete="off" />
+            @Html.ValidationMessageFor(m => m.Vencimiento)
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.CodigoSeguridad, "Código de seguridad *")
+            <input id="CodigoSeguridad" name="CodigoSeguridad" type="password" class="form-control solo-digitos" inputmode="numeric" required pattern="[0-9]{3,4}" maxlength="4" autocomplete="off" />
+            @Html.ValidationMessageFor(m => m.CodigoSeguridad)
+        </div>
+    </div>
+    <p>Vencimiento y código de seguridad se usan únicamente para validar esta simulación; no se guardan.</p>
+    <a class="btn btn-outline-secondary" href="@Url.Action("VerReserva", new { id = Model.ReservaId })">Volver</a>
+    <button type="button" id="abrirPago" class="btn btn-primary my-3">Revisar pago simulado</button>
+    <div class="modal fade" id="modalPago" tabindex="-1" aria-labelledby="tituloPago" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header"><h2 class="modal-title h5" id="tituloPago">Confirmar pago simulado</h2></div>
+            <div class="modal-body">Se simulará el pago de USD @Model.Reserva.ImporteVigente. No se cobrará dinero real.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" id="enviarPago" class="btn btn-primary">Confirmar simulación</button>
+            </div>
+        </div></div>
+    </div>
+}
+@section scripts { @Scripts.Render("~/bundles/jqueryval") <script src="@Url.Content("~/Scripts/compra.js")"></script> }

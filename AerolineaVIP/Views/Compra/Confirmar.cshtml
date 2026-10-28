@@ -1,0 +1,29 @@
+﻿@using AerolineaVIP.Models
+@model ResumenCompra
+@{ ViewBag.Title = "Confirmar reserva"; }
+@Html.Partial("_PasosCompra", (List<PasoCompra>)ViewBag.Pasos)
+<h1>3. Confirme su reserva</h1>
+<div class="table-responsive"><table class="table table-striped">
+    <thead><tr><th>Pasajero</th><th>Documento</th><th>Tramo y ruta</th><th>Asiento</th><th>Importe (USD)</th></tr></thead>
+    <tbody>
+    @foreach (var fila in Model.Filas) {
+        <tr><td>@fila.Pasajero</td><td>@fila.Documento</td><td>@fila.Tramo · @fila.Ruta</td><td>@fila.Asiento</td><td>@fila.Importe</td></tr>
+    }
+    </tbody>
+</table></div>
+<p class="h4">Total: USD @Html.DisplayFor(m => m.Total)</p>
+<p id="condicionesReserva">Sin impuestos. La retención vence a las 24 horas de crear la reserva o 2 horas antes de la primera salida, lo que ocurra primero. Al vencer se liberan los asientos. El pago es simulado.</p>
+@using (Html.BeginForm("Confirmar", "Compra", FormMethod.Post)) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <input type="hidden" name="clave" value="@Model.Seleccion.Clave" />
+    <div class="form-check my-3">
+        @Html.CheckBoxFor(m => m.AceptaCondiciones, new { @class = "form-check-input", aria_describedby = "condicionesReserva" })
+        @Html.LabelFor(m => m.AceptaCondiciones, "Acepto las condiciones de la reserva *", new { @class = "form-check-label" })
+        @Html.ValidationMessageFor(m => m.AceptaCondiciones, "", new { @class = "text-danger d-block" })
+    </div>
+    <a class="btn btn-outline-secondary" href="@Url.Action("Pasajeros")">Volver a modificar</a>
+    <button class="btn btn-outline-primary" type="submit" name="Destino" value="reserva">Confirmar reserva</button>
+    <button class="btn btn-primary" type="submit" name="Destino" value="pagar">Confirmar y pagar</button>
+}
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }

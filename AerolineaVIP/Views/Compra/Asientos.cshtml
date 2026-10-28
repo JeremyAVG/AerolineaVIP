@@ -1,0 +1,25 @@
+﻿@using AerolineaVIP.Models
+@model ResumenCompra
+@{ ViewBag.Title = "Seleccionar asientos"; }
+@Html.Partial("_PasosCompra", (List<PasoCompra>)ViewBag.Pasos)
+<h1>1. Seleccione sus asientos</h1>
+<p>Seleccione @Model.Seleccion.Cantidad asiento(s) por tramo. La selección temporal se confirma en el servidor al registrar la reserva.</p>
+<div id="seleccionCompra" data-cantidad="@Model.Seleccion.Cantidad">
+@using (Html.BeginForm("Asientos", "Compra", FormMethod.Post, new { id = "formAsientos" })) {
+    @Html.AntiForgeryToken()
+    <ul class="nav nav-tabs" role="tablist">
+    @foreach (var mapa in Model.Mapas) {
+        <li class="nav-item"><button class="nav-link tramo-tab" type="button" data-tramo="@mapa.VueloId" role="tab">@mapa.Titulo</button></li>
+    }
+    </ul>
+    foreach (var mapa in Model.Mapas) {
+        <div class="panel-tramo" data-tramo="@mapa.VueloId" role="tabpanel">
+            @Html.Partial("_MapaAsientos", mapa)
+            <input type="hidden" name="asientos" value="@mapa.SeleccionTexto" />
+        </div>
+    }
+    <p id="avisoAsientos" role="status"></p>
+    <button class="btn btn-primary" type="submit">Continuar a pasajeros</button>
+}
+</div>
+@section scripts { @Scripts.Render("~/bundles/jqueryval") <script src="@Url.Content("~/Scripts/compra.js")"></script> }

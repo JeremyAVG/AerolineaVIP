@@ -7,6 +7,13 @@ namespace AerolineaVIP.Models
 {
     public class BusquedaVuelosViewModel
     {
+        public BusquedaVuelosViewModel()
+        {
+            Origenes = new List<SelectListItem>();
+            Destinos = new List<SelectListItem>();
+            Sugerencias = new List<OpcionVuelo>();
+        }
+        public List<OpcionVuelo> Sugerencias { get; set; }
         [Required(ErrorMessage = "Seleccione el origen.")]
         [Display(Name = "Origen")]
         public int? OrigenId { get; set; }

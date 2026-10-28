@@ -86,6 +86,8 @@ namespace AerolineaVIP.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "VueloId,FrecuenciaId,FechaOperacion,AeronaveId,EstadoVueloCodigo")] Vuelo vuelo)
         {
+            string preparacion = vuelo.ValidarPreparacion(db, vuelo.AeronaveId);
+            if (preparacion != null) ModelState.AddModelError("AeronaveId", preparacion);
             if (ModelState.IsValid)
             {
                 db.Vueloes.Add(vuelo);
@@ -136,6 +138,10 @@ namespace AerolineaVIP.Areas.Admin.Controllers
                 ModelState.AddModelError("AeronaveId", "Seleccione una aeronave válida.");
             }
 
+            var candidato = new Vuelo { VueloId = vuelo.VueloId, FrecuenciaId = vuelo.FrecuenciaId,
+                FechaOperacion = vuelo.FechaOperacion, EstadoVueloCodigo = estadoVueloCodigo };
+            string preparacion = candidato.ValidarPreparacion(db, aeronaveId);
+            if (preparacion != null) ModelState.AddModelError("AeronaveId", preparacion);
             if (ModelState.IsValid)
             {
                 vuelo.AeronaveId = aeronaveId;

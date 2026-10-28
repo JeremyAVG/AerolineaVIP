@@ -1,0 +1,13 @@
+﻿@using AerolineaVIP.Models
+@model OpcionVuelo
+<article class="card h-100 shadow-sm"><div class="card-body">
+    <h2 class="h4">@Model.Descripcion</h2><p>@Model.Horario</p>
+    <p><strong>USD @Html.DisplayFor(m => m.Tarifa)</strong> por pasajero · @Model.Disponibles asientos disponibles</p>
+    <a class="btn btn-outline-primary" href="@Url.Action("Disponibilidad", "Vuelos", new { clave = Model.Clave, cantidad = Model.Pasajeros })">Ver disponibilidad</a>
+    @using (Html.BeginForm("Iniciar", "Compra", FormMethod.Post, new { @class = "d-inline" })) {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="clave" value="@Model.Clave" />
+        <input type="hidden" name="cantidad" value="@Model.Pasajeros" />
+        <button class="btn btn-primary" type="submit">Seleccionar</button>
+    }
+</div></article>

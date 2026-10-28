@@ -1,0 +1,9 @@
+﻿@using AerolineaVIP.Models
+@model FinalCompra
+@{ ViewBag.Title = "Detalle de reserva"; }
+<h1>Reserva @Model.Codigo</h1>
+<p>@Model.Mensaje</p>
+@Html.Partial("_DetalleReserva", Model)
+<p>Vence: @Model.Expiracion</p><p>Total: USD @Model.Total</p>
+@if (Model.PuedePagar) { <a class="btn btn-primary" href="@Url.Action("Pagar", new { id = Model.ReservaId })">Pagar reserva</a> }
+<a class="btn btn-outline-secondary" href="@Url.Action("Final", new { id = Model.ReservaId })">Volver a la confirmación</a>

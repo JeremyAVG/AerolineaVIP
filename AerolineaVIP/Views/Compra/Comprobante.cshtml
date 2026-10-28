@@ -1,0 +1,13 @@
+﻿@using AerolineaVIP.Models
+@model FinalCompra
+@{ ViewBag.Title = "Comprobantes académicos"; }
+<h1>Comprobantes de @Model.Codigo</h1>
+@foreach (var comprobante in Model.Comprobantes) {
+    <section class="card p-3 mb-3"><h2 class="h5">@comprobante.TipoComprobanteCodigo · @comprobante.NumeroComprobante</h2>
+        <p>@comprobante.EstadoComprobanteCodigo · @Html.DisplayFor(m => comprobante.FechaEmision)</p>
+        <p>Total: USD @Model.Total</p><p>@Model.Metodo</p>
+        <p>Documento académico sin validez tributaria. Sin impuestos. Pago simulado.</p>
+    </section>
+}
+@Html.Partial("_DetalleReserva", Model)
+<a class="btn btn-outline-secondary" href="@Url.Action("Final", new { id = Model.ReservaId })">Volver a la confirmación</a>

@@ -1,0 +1,38 @@
+﻿@using AerolineaVIP.Models
+@model PasajerosCompra
+@{ ViewBag.Title = "Pasajeros"; }
+@Html.Partial("_PasosCompra", (List<PasoCompra>)ViewBag.Pasos)
+<h1>2. Datos de los pasajeros</h1>
+<p>Los campos con * son obligatorios. El orden corresponde a la selección de asientos en cada tramo.</p>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    if (Model.EsCounter) {
+        @Html.LabelFor(m => m.UsuarioCliente, "Nombre de usuario del cliente *")
+        @Html.TextBoxFor(m => m.UsuarioCliente, new { @class = "form-control", required = "required" })
+    }
+    for (int i = 0; i < Model.Personas.Count; i++) {
+        <fieldset class="card p-3 my-3 pasajero-compra">
+            <legend class="h5">@Model.Personas[i].Titulo</legend>
+            @Html.LabelFor(m => m.Personas[i].TipoDocumento, "Tipo de documento *")
+            @Html.DropDownListFor(m => m.Personas[i].TipoDocumento, new SelectList(new[] { new { Value = "CEDULA", Text = "Cédula" }, new { Value = "PASAPORTE", Text = "Pasaporte" } }, "Value", "Text", Model.Personas[i].TipoDocumento), new { @class = "form-select tipo-documento" })
+            @Html.LabelFor(m => m.Personas[i].Documento, "Documento *")
+            @Html.TextBoxFor(m => m.Personas[i].Documento, new { @class = "form-control documento", maxlength = "20" })
+            @Html.ValidationMessageFor(m => m.Personas[i].Documento)
+            @Html.LabelFor(m => m.Personas[i].Nombres, "Nombres *")
+            @Html.TextBoxFor(m => m.Personas[i].Nombres, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Personas[i].Apellidos, "Apellidos *")
+            @Html.TextBoxFor(m => m.Personas[i].Apellidos, new { @class = "form-control" })
+            @Html.LabelFor(m => m.Personas[i].FechaNacimiento, "Fecha de nacimiento (opcional)")
+            @Html.TextBoxFor(m => m.Personas[i].FechaNacimiento, "{0:yyyy-MM-dd}", new { @class = "form-control fecha-nacimiento", type = "date" })
+            @Html.ValidationMessageFor(m => m.Personas[i].FechaNacimiento)
+            @Html.LabelFor(m => m.Personas[i].Correo, "Correo (opcional)")
+            @Html.TextBoxFor(m => m.Personas[i].Correo, new { @class = "form-control", type = "email" })
+            @Html.LabelFor(m => m.Personas[i].Telefono, "Teléfono (opcional)")
+            @Html.TextBoxFor(m => m.Personas[i].Telefono, new { @class = "form-control", type = "tel", maxlength = "20" })
+        </fieldset>
+    }
+    <a href="@Url.Action("Asientos")" class="btn btn-outline-secondary">Volver a asientos</a>
+    <button class="btn btn-primary" type="submit">Revisar reserva</button>
+}
+@section scripts { @Scripts.Render("~/bundles/jqueryval") <script src="@Url.Content("~/Scripts/compra.js")"></script> }

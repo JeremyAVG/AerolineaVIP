@@ -581,4 +581,28 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+  <ItemGroup>
+    <Compile Include="Controllers\CompraController.cs" />
+    <Compile Include="Models\FlujoCompraViewModels.cs" />
+    <Compile Include="Models\Pago_Calculos.cs" />
+    <Content Include="Scripts\compra.js" />
+    <Content Include="Views\Compra\Asientos.cshtml" />
+    <Content Include="Views\Compra\Confirmar.cshtml" />
+    <Content Include="Views\Compra\Final.cshtml" />
+    <Content Include="Views\Compra\Pagar.cshtml" />
+    <Content Include="Views\Compra\Pasajeros.cshtml" />
+    <Content Include="Views\Shared\_MapaAsientos.cshtml" />
+    <Content Include="Views\Shared\_TarjetaVuelo.cshtml" />
+    <Content Include="Views\Shared\_PasosCompra.cshtml" />
+    <Content Include="Views\Vuelos\Disponibilidad.cshtml" />
+    <Content Include="Content\marcas\visa.svg" />
+    <Content Include="Content\marcas\diners.svg" />
+    <Content Include="Content\marcas\amex.svg" />
+    <Content Include="Content\marcas\mastercard.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Compra\_DetalleReserva.cshtml" />
+    <Content Include="Views\Compra\VerReserva.cshtml" />
+    <Content Include="Views\Compra\Comprobante.cshtml" />
+  </ItemGroup>
 </Project>

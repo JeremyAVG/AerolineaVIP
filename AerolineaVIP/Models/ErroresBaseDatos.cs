@@ -9,6 +9,9 @@ namespace AerolineaVIP.Models
     {
         private static readonly Dictionary<string, string> MensajesPorRestriccion = new Dictionary<string, string>
         {
+            { "UX_RPV_AsientoActivo", "El asiento acaba de ser reservado. Seleccione otro asiento." },
+            { "UX_RPV_PasajeroActivo", "El pasajero ya tiene un asiento vigente en ese vuelo." },
+            { "UX_Pago_AprobadoPorCompra", "La compra ya tiene un pago aprobado. Consulte su confirmación." },
             { "UQ_Aeropuerto_CodigoIATA", "Ya existe un aeropuerto con ese código IATA." },
             { "UQ_Ruta_OrigenDestino", "Ya existe una ruta con ese origen y destino." },
             { "UQ_Frecuencia", "Ya existe una frecuencia para esa ruta, día y hora de salida." },

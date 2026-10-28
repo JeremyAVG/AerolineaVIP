@@ -266,19 +266,14 @@ namespace AerolineaVIP.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                Session.Remove("RecuperacionToken");
+                var user = await UserManager.FindByEmailAsync(model.Email);
+                if (user != null)
                 {
-                    // No revelar que el usuario no existe o que no está confirmado
-                    return View("ForgotPasswordConfirmation");
+                    string token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                    Session["RecuperacionToken"] = token;
                 }
-
-                // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
-                // Enviar un correo electrónico con este vínculo
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                return RedirectToAction("ForgotPasswordConfirmation");
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario

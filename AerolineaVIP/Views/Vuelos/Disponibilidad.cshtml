@@ -1,0 +1,23 @@
+﻿@using AerolineaVIP.Models
+@model DisponibilidadCompra
+@{ ViewBag.Title = "Disponibilidad"; }
+<h1>Disponibilidad de asientos</h1>
+@foreach (var mapa in Model.Mapas) {
+    <div class="alert alert-light border d-flex flex-wrap gap-3" aria-label="Datos del vuelo">
+        <strong>@mapa.Codigo</strong><span>@mapa.Ruta</span><span>@mapa.Fecha</span>
+        <span>@mapa.Horario</span><span>Aeronave: @mapa.Aeronave</span><span>Capacidad: 7</span>
+    </div>
+    <p><strong>Disponibles:</strong> @mapa.Disponibles · <strong>Reservados:</strong> @mapa.Reservados · <strong>Ocupados:</strong> @mapa.Ocupados</p>
+    @Html.Partial("_MapaAsientos", mapa)
+}
+<p role="status">Hora de cálculo: @Model.Calculado</p>
+<div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-primary" href="@Url.Action("Disponibilidad", new { clave = Model.Opcion.Clave, cantidad = Model.Opcion.Pasajeros })">Actualizar disponibilidad</a>
+    @using (Html.BeginForm("Iniciar", "Compra", FormMethod.Post)) {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="clave" value="@Model.Opcion.Clave" />
+        <input type="hidden" name="cantidad" value="@Model.Opcion.Pasajeros" />
+        <button class="btn btn-primary" type="submit" disabled="@Model.SinCupos">Continuar</button>
+    }
+    <a class="btn btn-outline-secondary" href="@Url.Action("Resultados", new { OrigenId = Model.OrigenId, DestinoId = Model.DestinoId, Fecha = Model.Fecha, Pasajeros = Model.Opcion.Pasajeros })">Regresar a resultados</a>
+</div>

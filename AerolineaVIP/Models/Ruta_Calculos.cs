@@ -27,14 +27,19 @@ namespace AerolineaVIP.Models
         }
 
         // Días en que se puede viajar por "primera" y continuar por "segunda" el mismo día
-        private static List<byte> DiasConConexion(Ruta primera, Ruta segunda)
+        private static List<byte> DiasConConexion(AerolineaVIPEntities db, Ruta primera, Ruta segunda)
         {
             var dias = new List<byte>();
+            if (primera.AeropuertoDestino.CodigoIATA != "GYE") return dias;
             foreach (var f1 in primera.Frecuencias.Where(f => f.Activa))
             {
                 bool hayConexion = segunda.Frecuencias.Any(f2 => f2.Activa
                     && f2.DiaSemana == f1.DiaSemana
-                    && f2.HoraSalida >= f1.HoraLlegada);
+                    && f2.HoraSalida >= f1.HoraLlegada.Add(System.TimeSpan.FromMinutes(60))
+                    && db.Vueloes.Any(v1 => v1.FrecuenciaId == f1.FrecuenciaId && v1.AeronaveId != null
+                        && v1.EstadoVueloCodigo != "CANCELADO"
+                        && db.Vueloes.Any(v2 => v2.FrecuenciaId == f2.FrecuenciaId && v2.FechaOperacion == v1.FechaOperacion
+                            && v2.AeronaveId == v1.AeronaveId && v2.EstadoVueloCodigo != "CANCELADO")));
                 if (hayConexion && !dias.Contains(f1.DiaSemana))
                 {
                     dias.Add(f1.DiaSemana);
@@ -59,7 +64,7 @@ namespace AerolineaVIP.Models
                     && !directas.Any(d => d.AeropuertoDestinoId == r.AeropuertoDestinoId));
                 foreach (var segunda in siguientes)
                 {
-                    var dias = DiasConConexion(primera, segunda);
+                    var dias = DiasConConexion(db, primera, segunda);
                     if (dias.Any())
                     {
                         conEscala.Add(new DestinoDisponible

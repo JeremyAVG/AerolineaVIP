@@ -1,19 +1,17 @@
-@using AerolineaVIP.Models
-@model BusquedaVuelosViewModel
+﻿@using AerolineaVIP.Models
+@model ResultadosCompra
 @{
     ViewBag.Title = "Resultados de vuelos";
 }
 
 <h1 class="h2 mb-3">@ViewBag.Title</h1>
 
-<div class="filtros-vip mb-3">
-    <strong>@ViewBag.Origen → @ViewBag.Destino</strong>
-    · @Html.DisplayFor(m => m.Fecha)
-    · @Model.Pasajeros pasajero(s)
-</div>
-
-<div class="alert alert-info" role="status">
-    Los criterios de búsqueda son válidos. La lista de vuelos y horarios (pantalla 6) se implementa en la siguiente fase.
+<p>Tarifas en USD por pasajero. Los domingos se venden únicamente itinerarios completos de ida o regreso.</p>
+@if (Model.Opciones.Count == 0) { <div class="alert alert-info">No hay vuelos disponibles para estos criterios.</div> }
+<div class="row g-3">
+@foreach (var opcion in Model.Opciones) {
+    <div class="col-lg-6">@Html.Partial("_TarjetaVuelo", opcion)</div>
+}
 </div>
 
 @Html.ActionLink("Nueva búsqueda", "Buscar", null, new { @class = "btn btn-outline-secondary" })

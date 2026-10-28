@@ -1,0 +1,27 @@
+﻿@using AerolineaVIP.Models
+@model MapaCompra
+<section class="mapa-tramo my-4" data-vuelo="@Model.VueloId">
+    <h2 class="visually-hidden">@Model.Titulo</h2>
+    <div class="cabina-phenom" aria-label="Mapa de asientos Embraer Phenom 300E">
+        <div class="proa-phenom"><span aria-hidden="true">✈</span><span>Proa<br />Cabina</span></div>
+        <div class="asientos-phenom">
+            <div class="puerta-phenom">Puerta<br /><small>Posición 1I</small></div>
+            <div class="pasillo-phenom">Pasillo</div>
+            <div class="mesa-phenom mesa-d">Mesa</div>
+            <div class="mesa-phenom mesa-i">Mesa</div>
+        @foreach (var asiento in Model.Asientos) {
+            <button type="button" class="@asiento.Clase" style="@asiento.Posicion;background-color:@asiento.Color"
+                    data-numero="@asiento.Numero" disabled="@asiento.Deshabilitado" aria-pressed="@asiento.SeleccionadoTexto" aria-label="@asiento.DescripcionAccesible">
+                <strong>@asiento.Codigo</strong><br /><small>@asiento.Estado</small><span class="marca-seleccion" aria-hidden="true"> ✓</span>
+            </button>
+        }
+        </div>
+        <div class="cola-phenom">Baño<br /><small>Cola</small></div>
+    </div>
+    <ul class="leyenda-asientos list-unstyled d-flex flex-wrap justify-content-center gap-3 mt-3" aria-label="Leyenda de asientos">
+        <li><span class="muestra disponible"></span> Disponible (verde)</li>
+        <li><span class="muestra reservado"></span> Reservado (morado)</li>
+        <li><span class="muestra ocupado"></span> Ocupado (rojo)</li>
+        <li><span class="muestra seleccion">✓</span> Su selección: borde grueso + ✓</li>
+    </ul>
+</section>

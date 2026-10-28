@@ -40,4 +40,8 @@ En `Web.config` las dos cadenas de conexión deben quedar con **`Data Source=.`*
 
 ## Más información
 
+El flujo de compra (pantallas 4–12) está implementado y probado por el grupo: búsqueda y disponibilidad, selección por tramo, pasajeros, reserva, pago simulado y confirmación con comprobantes académicos. Incluye ajustes visuales y validaciones solicitadas para los wireframes. La recuperación de acceso genera un token sin enviar correo. Las políticas DP siguen siendo propuestas del grupo.
+
+Para ejecutar la prueba de integración con la aplicación iniciada, use `Pruebas\FlujoCompra.Integracion.ps1 -BaseUrl http://localhost:59817` (ajuste la URL a su instancia). La prueba utiliza las cadenas de Web.config y elimina sus propios registros temporales al terminar. Para el commit de FASE 3 el grupo autorizó incluir la configuración académica local de Web.config; no se realiza push.
+
 Las reglas del docente, el estado de cada fase y las convenciones del código están en `CLAUDE.md`.
