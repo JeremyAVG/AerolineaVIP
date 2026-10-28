@@ -74,3 +74,14 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
+
+# Instrucciones y comprobaciones internas de desarrollo
+/CLAUDE.md
+/AGENTS.md
+/.claude/
+/.codex/
+/.agents/
+/Documentacion/Inventario_Vistas.md
+/Documentacion/Revision_Final.md
+/Pruebas/PrepararEntrega.ps1
+/Pruebas/RevisionEntrega.ps1
