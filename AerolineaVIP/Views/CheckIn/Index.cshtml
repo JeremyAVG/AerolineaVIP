@@ -1,0 +1,43 @@
+﻿@using AerolineaVIP.Models
+@model BusquedaCheckInViewModel
+@{ ViewBag.Title = "Check-in"; }
+<h1>Check-in</h1>
+<p>Abre 24 horas y cierra una hora antes de cada tramo. Requiere reserva y asiento confirmados.</p>
+@if (TempData["Mensaje"] != null) { <div class="alert alert-success" role="status">@TempData["Mensaje"]</div> }
+@if (TempData["Error"] != null) { <div class="alert alert-warning" role="alert">@TempData["Error"]</div> }
+@using (Html.BeginForm("Index", "CheckIn", FormMethod.Get, new { @class = "row g-3 mb-3" })) {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="col-md-5">@Html.LabelFor(m => m.CodigoReserva) @Html.TextBoxFor(m => m.CodigoReserva, new { @class = "form-control", maxlength = "10" })</div>
+    <div class="col-md-5">@Html.LabelFor(m => m.Documento) @Html.TextBoxFor(m => m.Documento, new { @class = "form-control", maxlength = "20" })</div>
+    <div class="col-md-2 align-self-end"><button class="btn btn-primary" type="submit">Localizar reserva</button></div>
+}
+@if (Model.Mensaje != null) { <div class="alert alert-info" role="status">@Model.Mensaje</div> }
+@if (Model.Filas.Count > 0) {
+    using (Html.BeginForm("Registrar", "CheckIn", FormMethod.Post)) {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="CodigoReserva" value="@Model.CodigoReserva" />
+        <input type="hidden" name="Documento" value="@Model.Documento" />
+        <div class="table-responsive"><table class="table table-striped">
+            <thead><tr><th>Selección</th><th>Pasajero</th><th>Documento</th><th>Tramo</th><th>Asiento</th><th>Elegibilidad</th></tr></thead>
+            <tbody>
+            @foreach (var fila in Model.Filas) {
+                <tr><td>@if (fila.Elegible) { <label><input type="checkbox" name="Seleccionados" value="@fila.AsignacionId" /> Realizar check-in</label> }</td>
+                    <td>@fila.Pasajero</td><td>@fila.Documento</td><td>@fila.Tramo</td><td>@fila.Asiento</td><td>@fila.Estado</td></tr>
+            }
+            </tbody>
+        </table></div>
+        <button class="btn btn-primary" type="submit">Completar check-in de seleccionados</button>
+    }
+    foreach (var fila in Model.Filas) {
+        if (fila.Anulable) {
+            using (Html.BeginForm("Anular", "CheckIn", FormMethod.Post, new { @class = "mt-3" })) {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="CodigoReserva" value="@Model.CodigoReserva" />
+                <input type="hidden" name="Documento" value="@Model.Documento" />
+                <input type="hidden" name="checkInId" value="@fila.CheckInId" />
+                <button class="btn btn-outline-danger" type="submit">Anular check-in: @fila.Pasajero · @fila.Tramo</button>
+            }
+        }
+    }
+}
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }

@@ -7,6 +7,140 @@ namespace AerolineaVIP.Models
 {
     public partial class Reserva
     {
+        public static List<int> ReservasAsistidas(System.Web.HttpSessionStateBase sesion, string operador)
+        {
+            var acceso = sesion["AccesoAsistencia"] as AccesoAsistencia;
+            var ids = acceso != null && acceso.OperadorId == operador ? acceso.Reservas.ToList() : new List<int>();
+            var seleccion = sesion["Compra"] as SeleccionCompra;
+            if (seleccion != null && seleccion.UsuarioId == operador && seleccion.ReservaId.HasValue)
+                ids.Add(seleccion.ReservaId.Value);
+            return ids.Distinct().ToList();
+        }
+        public static ClienteAsistido BuscarCliente(string identificador, bool porId = false)
+        {
+            identificador = (identificador ?? "").Trim();
+            using (var identidad = new ApplicationDbContext())
+            {
+                var rol = identidad.Roles.FirstOrDefault(r => r.Name == RolesSistema.Cliente);
+                if (rol == null || identificador.Length == 0) return null;
+                var cliente = identidad.Users.FirstOrDefault(u => u.Roles.Any(r => r.RoleId == rol.Id)
+                    && (porId ? u.Id == identificador : u.UserName == identificador || u.Email == identificador));
+                return cliente == null ? null : new ClienteAsistido { UsuarioId = cliente.Id, NombreUsuario = cliente.UserName };
+            }
+        }
+
+        public static void BuscarAsistencia(AerolineaVIPEntities db, AsistenciaViewModel modelo)
+        {
+            string buscar = modelo.Buscar.Trim();
+            modelo.Reservas = db.Reservas.Where(r => r.CodigoReserva == buscar
+                || r.ReservaPasajeroVueloes.Any(a => a.Pasajero.NumeroDocumento == buscar))
+                .OrderByDescending(r => r.ReservaId).Take(50).ToList().Select(r =>
+                {
+                    var pasajeros = r.ReservaPasajeroVueloes.Select(a => a.Pasajero).Distinct().ToList();
+                    var pasajero = pasajeros.FirstOrDefault(p => p.NumeroDocumento == buscar) ?? pasajeros.FirstOrDefault();
+                    return new ReservaAsistidaFila { Id = r.ReservaId, Codigo = r.CodigoReserva, Estado = r.EstadoReservaCodigo,
+                        Documentos = string.Join(" / ", pasajeros.Select(p => p.DocumentoTexto)),
+                        DocumentoConsulta = pasajero == null ? null : pasajero.NumeroDocumento, PuedePagar = r.PuedePagar };
+                }).ToList();
+            if (modelo.Reservas.Count == 0) modelo.Mensaje = "No se encontraron reservas con los datos indicados.";
+        }
+        public static List<PaginaCliente> PaginasCliente(int total, int pagina, int tamano = 10)
+        {
+            int cantidad = Math.Max(1, (int)Math.Ceiling(total / (decimal)tamano));
+            int inicio = Math.Max(1, pagina - 3), fin = Math.Min(cantidad, pagina + 3);
+            var numeros = Enumerable.Range(inicio, Math.Max(0, fin - inicio + 1)).ToList();
+            if (!numeros.Contains(1)) numeros.Insert(0, 1);
+            if (!numeros.Contains(cantidad)) numeros.Add(cantidad);
+            return numeros.Select(n => new PaginaCliente { Numero = n, Clase = n == pagina ? "page-item active" : "page-item",
+                Actual = n == pagina ? "page" : null }).ToList();
+        }
+
+        public static void ListarPropias(AerolineaVIPEntities db, string usuarioId, MisReservasViewModel modelo, bool counter = false)
+        {
+            var consulta = db.Reservas.Where(r => r.UsuarioId == usuarioId);
+            if (modelo.Desde.HasValue) { var desde = modelo.Desde.Value.Date; consulta = consulta.Where(r => r.ReservaPasajeroVueloes.Select(a => (DateTime?)a.Vuelo.FechaOperacion).Min() >= desde); }
+            if (modelo.Hasta.HasValue) { var hasta = modelo.Hasta.Value.Date; consulta = consulta.Where(r => r.ReservaPasajeroVueloes.Select(a => (DateTime?)a.Vuelo.FechaOperacion).Min() <= hasta); }
+            if (!string.IsNullOrEmpty(modelo.Estado)) consulta = consulta.Where(r => r.EstadoReservaCodigo == modelo.Estado);
+            modelo.Total = consulta.Count();
+            int ultima = Math.Max(1, (int)Math.Ceiling(modelo.Total / 10m));
+            modelo.Pagina = Math.Min(Math.Max(1, modelo.Pagina), ultima);
+            modelo.Reservas = consulta.OrderByDescending(r => r.FechaCreacion).ThenByDescending(r => r.ReservaId)
+                .Skip((modelo.Pagina - 1) * 10).Take(10).ToList().Select(r =>
+                {
+                    var compra = r.Compras.OrderByDescending(c => c.CompraId).FirstOrDefault();
+                    var primerViaje = r.ReservaPasajeroVueloes.Select(a => (DateTime?)a.Vuelo.FechaOperacion).Min();
+                    return new ReservaClienteFila { Id = r.ReservaId, Codigo = r.CodigoReserva, Fecha = primerViaje.HasValue ? primerViaje.Value.ToString("dd/MM/yyyy") : "Sin tramos",
+                        Documentos = string.Join(" / ", r.ReservaPasajeroVueloes.Select(a => a.Pasajero).Distinct().Select(p => p.DocumentoTexto)),
+                        Ruta = string.Join(" / ", r.ReservaPasajeroVueloes.Select(a => a.Vuelo).Distinct().OrderBy(v => v.Salida).Select(v => v.Frecuencia.Ruta.Descripcion)),
+                        Reserva = EstadoVisual("Reserva", r.EstadoReservaCodigo), Compra = EstadoVisual("Compra", compra == null ? "SIN COMPRA" : compra.EstadoCompraCodigo),
+                        PuedePagar = r.PuedePagar, PuedeCancelar = r.Gestion(false, counter).PuedeCancelar };
+                }).ToList();
+            modelo.Paginas = PaginasCliente(modelo.Total, modelo.Pagina);
+        }
+
+        public GestionReservaViewModel Gestion(bool administrador, bool counter = false)
+        {
+            var modelo = new GestionReservaViewModel { ReservaId = ReservaId, Detalle = Confirmacion(), Reembolso = "Sin costo ni reembolso.",
+                Advertencia = "Se cancelará la reserva completa y se liberarán todos sus asientos: "
+                    + string.Join(", ", Confirmacion().Filas.Select(f => f.Tramo + " " + f.Asiento)) + ". Esta acción no se puede deshacer." };
+            var compra = Compras.FirstOrDefault(c => c.EstadoCompraCodigo == "PAGADA");
+            var asignaciones = ReservaPasajeroVueloes.ToList();
+            var reversado = Compras.SelectMany(c => c.Pagoes).Where(p => p.EstadoPagoCodigo == "REVERSADO").OrderByDescending(p => p.PagoId).FirstOrDefault();
+            if (reversado != null) modelo.Reembolso = reversado.MensajeResultado;
+            if (EstadoReservaCodigo == "CANCELADA" || EstadoReservaCodigo == "EXPIRADA") modelo.Motivo = "La reserva ya está cancelada o expirada.";
+            else if (asignaciones.Count == 0) modelo.Motivo = "La reserva no tiene tramos que se puedan cancelar.";
+            else if (EstadoReservaCodigo == "PENDIENTE" && PuedePagar && compra == null) modelo.PuedeCancelar = true;
+            else if (counter) modelo.Motivo = "El counter solo puede cancelar reservas PENDIENTES y vigentes; no puede cancelar reservas pagadas.";
+            else if (compra != null && asignaciones.Any(a => a.Vuelo.EstadoVueloCodigo == "CANCELADO"))
+            {
+                modelo.PuedeCancelar = administrador;
+                modelo.Motivo = administrador ? "Vuelo cancelado por la aerolínea: reembolso simulado del 100 %." : "El vuelo fue cancelado por la aerolínea. Solicite al Administrador el reembolso simulado del 100 %.";
+                modelo.Reembolso = "Reembolso simulado: USD " + compra.Importe.ToString("0.00") + " (100 %).";
+            }
+            else if (compra != null && EstadoReservaCodigo == "CONFIRMADA")
+            {
+                modelo.PuedeCancelar = asignaciones.Min(a => a.Vuelo.Salida) >= DateTime.Now.AddHours(24);
+                modelo.Motivo = modelo.PuedeCancelar ? "Cancelación hasta 24 horas antes del primer tramo." : "Dentro de las 24 horas anteriores al primer tramo no se permite cancelar por web.";
+                modelo.Reembolso = "Reembolso simulado: USD " + decimal.Round(compra.Importe * .80m, 2, MidpointRounding.AwayFromZero).ToString("0.00") + " (80 %).";
+            }
+            else modelo.Motivo = "La reserva no se encuentra vigente para cancelar.";
+            return modelo;
+        }
+
+        public void Cancelar(AerolineaVIPEntities db, bool administrador, bool counter = false)
+        {
+            using (var transaccion = db.Database.BeginTransaction())
+            {
+                db.Entry(this).Reload();
+                if (EstadoReservaCodigo == "CANCELADA") return;
+                var gestion = Gestion(administrador, counter);
+                if (!gestion.PuedeCancelar) throw new InvalidOperationException(gestion.Motivo);
+                var compra = Compras.FirstOrDefault(c => c.EstadoCompraCodigo == "PAGADA");
+                if (compra != null)
+                {
+                    var pago = compra.Pagoes.SingleOrDefault(p => p.EstadoPagoCodigo == "APROBADO");
+                    if (pago == null) throw new InvalidOperationException("No se encontró un pago aprobado para reversar.");
+                    bool total = administrador && ReservaPasajeroVueloes.Any(a => a.Vuelo.EstadoVueloCodigo == "CANCELADO");
+                    decimal reembolso = decimal.Round(compra.Importe * (total ? 1m : .8m), 2, MidpointRounding.AwayFromZero);
+                    pago.EstadoPagoCodigo = "REVERSADO";
+                    pago.Importe = reembolso;
+                    pago.MensajeResultado = "Reembolso simulado del " + (total ? "100" : "80") + " %: USD " + reembolso.ToString("0.00") + ". Importe original: USD " + compra.Importe.ToString("0.00") + ".";
+                    compra.EstadoCompraCodigo = "ANULADA";
+                    db.Comprobantes.Add(new Comprobante { Compra = compra, TipoComprobanteCodigo = "NOTA_CREDITO", NumeroComprobante = "NC-" + compra.CompraId.ToString("000000"),
+                        FechaEmision = DateTime.Now, EstadoComprobanteCodigo = "EMITIDO" });
+                }
+                foreach (var pendiente in Compras.Where(c => c.EstadoCompraCodigo == "PENDIENTE")) pendiente.EstadoCompraCodigo = "ANULADA";
+                foreach (var asignacion in ReservaPasajeroVueloes)
+                {
+                    foreach (var check in asignacion.CheckIns.Where(c => c.EstadoCheckInCodigo == "COMPLETADO")) check.EstadoCheckInCodigo = "ANULADO";
+                    asignacion.EstadoAsignacionCodigo = "CANCELADA";
+                }
+                EstadoReservaCodigo = "CANCELADA";
+                db.SaveChanges();
+                transaccion.Commit();
+            }
+        }
+
         public static List<PasoCompra> Pasos(int actual)
         {
             var textos = new[] { "1. Asientos", "2. Pasajeros", "3. Confirmar reserva", "4. Pago y confirmación" };
@@ -52,7 +186,7 @@ namespace AerolineaVIP.Models
                 Total = (compra != null ? compra.Importe : ReservaPasajeroVueloes.Sum(a => a.ImporteTramo)).ToString("0.00"),
                 Metodo = pago == null ? "Sin pago registrado" : (pago.MetodoPagoCodigo == "TARJETA_DEBITO" ? "Tarjeta de débito" : "Tarjeta de crédito")
                     + " · " + pago.MarcaTarjeta.Nombre + " **** " + pago.UltimosCuatroDigitos,
-                Operacion = pago == null ? "Sin operación" : pago.CodigoOperacion, Expiracion = ExpiracionTexto,
+                Operacion = pago == null ? "Sin operación" : pago.CodigoOperacion, Expiracion = ExpiracionTexto, MostrarExpiracion = MostrarExpiracion,
                 Comprobantes = compra == null ? new List<Comprobante>() : compra.Comprobantes.OrderBy(c => c.TipoComprobanteCodigo).ToList() };
             modelo.Estados.Add(EstadoVisual("Reserva", EstadoReservaCodigo));
             modelo.Estados.Add(EstadoVisual("Compra", compra == null ? "SIN COMPRA" : compra.EstadoCompraCodigo));
@@ -65,7 +199,7 @@ namespace AerolineaVIP.Models
                 modelo.Filas.Add(new FilaCompra { Tramo = "Tramo " + (vuelos.IndexOf(vuelo) + 1) + " · " + vuelo.CodigoVuelo,
                     Ruta = vuelo.Frecuencia.Ruta.Descripcion, Fecha = vuelo.FechaOperacion.ToString("dd/MM/yyyy"),
                     Horario = vuelo.Frecuencia.Horario, Pasajero = asignacion.Pasajero.Nombres + " " + asignacion.Pasajero.Apellidos,
-                    Documento = asignacion.Pasajero.NumeroDocumento, Asiento = asiento == null ? "Sin asignar" : asiento.Codigo,
+                    Documento = asignacion.Pasajero.DocumentoTexto, Asiento = asiento == null ? "Sin asignar" : asiento.Codigo,
                     Importe = asignacion.ImporteTramo.ToString("0.00") });
             }
             return modelo;
@@ -85,8 +219,9 @@ namespace AerolineaVIP.Models
 
         public string ExpiracionTexto
         {
-            get { return FechaExpiracion.HasValue ? FechaExpiracion.Value.ToString("dd/MM/yyyy HH:mm") : "Sin fecha de expiración"; }
+            get { return MostrarExpiracion && FechaExpiracion.HasValue ? FechaExpiracion.Value.ToString("dd/MM/yyyy HH:mm") : null; }
         }
+        public bool MostrarExpiracion { get { return EstadoReservaCodigo == "PENDIENTE"; } }
 
         public int CantidadPasajeros
         {
@@ -238,7 +373,7 @@ namespace AerolineaVIP.Models
                         if (seleccion.Pasajeros.Count > p)
                             resumen.Filas.Add(new FilaCompra { Tramo = "Tramo " + (i + 1), Ruta = vuelos[i].Frecuencia.Ruta.Descripcion,
                                 Pasajero = seleccion.Pasajeros[p].Nombres + " " + seleccion.Pasajeros[p].Apellidos,
-                                Documento = seleccion.Pasajeros[p].TipoDocumento + " " + seleccion.Pasajeros[p].Documento,
+                                Documento = Pasajero.NombreTipoDocumento(seleccion.Pasajeros[p].TipoDocumento) + " " + seleccion.Pasajeros[p].Documento,
                                 Asiento = codigo, Importe = vuelos[i].Frecuencia.Ruta.TarifaReferencial.ToString("0.00") });
                     }
                 }

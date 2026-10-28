@@ -4,7 +4,8 @@
 @Html.Partial("_PasosCompra", (List<PasoCompra>)ViewBag.Pasos)
 <h1>Confirmación</h1>
 <div class="@Model.ClaseMensaje" role="status">@Model.Mensaje</div>
-<p><strong>Reserva:</strong> @Model.Codigo · Vence: @Model.Expiracion</p>
+<p><strong>Reserva:</strong> @Model.Codigo</p>
+@if (Model.MostrarExpiracion) { <p>Vence: @Model.Expiracion</p> }
 <div class="d-flex flex-wrap gap-3 my-3">
 @foreach (var estado in Model.Estados) {
     <div><strong>@estado.Etiqueta:</strong> <span class="@estado.Clase">@estado.Texto</span></div>

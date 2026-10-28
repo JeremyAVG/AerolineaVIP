@@ -605,4 +605,23 @@
     <Content Include="Views\Compra\VerReserva.cshtml" />
     <Content Include="Views\Compra\Comprobante.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PdfSharp">
+      <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Compile Include="Models\AreaClienteViewModels.cs" />
+    <Compile Include="Models\CheckIn_Calculos.cs" />
+    <Compile Include="Models\Comprobante_Calculos.cs" />
+    <Content Include="Views\Reservas\Cancelaciones.cshtml" />
+    <Content Include="Views\Reservas\Gestion.cshtml" />
+    <Content Include="Views\Reservas\MisReservas.cshtml" />
+    <Content Include="Views\CheckIn\Index.cshtml" />
+    <Content Include="Views\Comprobantes\Index.cshtml" />
+    <Content Include="Views\Comprobantes\VistaPrevia.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Reservas\Asistencia.cshtml" />
+    <Content Include="Views\Reservas\NuevaCompra.cshtml" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,26 @@
+﻿@using AerolineaVIP.Models
+@model AsistenciaViewModel
+@{ ViewBag.Title = "Asistencia del counter"; }
+<h1>Asistencia del counter</h1>
+<p>Busque por código de reserva o documento del pasajero. Se muestran hasta 50 reservas recientes que coincidan.</p>
+<a class="btn btn-primary mb-3" href="@Url.Action("NuevaCompra")">Nueva compra para un cliente</a>
+@using (Html.BeginForm("Asistencia", "Reservas", FormMethod.Get, new { @class = "mb-4" })) {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    @Html.LabelFor(m => m.Buscar)
+    <div class="input-group">@Html.TextBoxFor(m => m.Buscar, new { @class = "form-control", maxlength = "20" })<button class="btn btn-outline-primary" type="submit">Buscar reservas</button></div>
+}
+@if (Model.Mensaje != null) { <div class="alert alert-info" role="status">@Model.Mensaje</div> }
+<div class="table-responsive"><table class="table table-striped">
+    <thead><tr><th>Reserva</th><th>Documentos</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+    @foreach (var reserva in Model.Reservas) {
+        <tr><td>@reserva.Codigo</td><td>@reserva.Documentos</td><td>@reserva.Estado</td><td>
+            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Gestion", new { id = reserva.Id })">Gestionar reserva</a>
+            @if (reserva.PuedePagar) { <a class="btn btn-sm btn-primary" href="@Url.Action("Pagar", "Compra", new { id = reserva.Id })">Pagar</a> }
+            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Index", "CheckIn", new { CodigoReserva = reserva.Codigo, Documento = reserva.DocumentoConsulta })">Check-in</a>
+        </td></tr>
+    }
+    </tbody>
+</table></div>
+<p>El counter puede cancelar reservas pendientes vigentes. No puede cancelar reservas pagadas ni acceder al área Admin.</p>
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }

@@ -1,0 +1,19 @@
+﻿@using AerolineaVIP.Models
+@model ComprobanteVista
+@{ ViewBag.Title = "Vista previa de comprobante"; }
+@if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+<article class="card p-4">
+    <h1 class="h3">@Model.Tipo · @Model.Numero</h1>
+    <p>@Model.Emisor · @Model.Identificacion</p><p>@Model.Direccion</p>
+    <p>Reserva: @Model.CodigoReserva · Emisión: @Model.Fecha · Estado: @Model.Estado</p>
+    <p>Operación simulada: @Model.Operacion</p><p>@Model.Metodo</p>
+    <div class="table-responsive"><table class="table">
+    <thead><tr><th>Tramo</th><th>Ruta</th><th>Fecha y horario</th><th>Pasajero</th><th>Documento</th><th>Asiento</th></tr></thead>
+    <tbody>
+    @foreach (var fila in Model.Filas) { <tr><td>@fila.Tramo</td><td>@fila.Ruta</td><td>@fila.Fecha · @fila.Horario</td><td>@fila.Pasajero</td><td>@fila.Documento</td><td>@fila.Asiento</td></tr> }
+    </tbody></table></div>
+    <p class="h4">Total del comprobante: @Model.Importe</p>
+    <p>@ComprobanteVista.Leyenda</p><p>Sin impuestos. Sin validez tributaria. No representa un cobro ni un reembolso real.</p>
+</article>
+<a class="btn btn-primary mt-3" href="@Url.Action("Descargar", new { id = Model.Id })">Descargar PDF</a>
+<a class="btn btn-outline-secondary mt-3" href="@Url.Action("Index")">Mis comprobantes</a>

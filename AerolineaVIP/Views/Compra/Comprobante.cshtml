@@ -7,6 +7,8 @@
         <p>@comprobante.EstadoComprobanteCodigo · @Html.DisplayFor(m => comprobante.FechaEmision)</p>
         <p>Total: USD @Model.Total</p><p>@Model.Metodo</p>
         <p>Documento académico sin validez tributaria. Sin impuestos. Pago simulado.</p>
+        <a href="@Url.Action("VistaPrevia", "Comprobantes", new { id = comprobante.ComprobanteId })">Vista previa</a>
+        <a href="@Url.Action("Descargar", "Comprobantes", new { id = comprobante.ComprobanteId })">Descargar PDF</a>
     </section>
 }
 @Html.Partial("_DetalleReserva", Model)

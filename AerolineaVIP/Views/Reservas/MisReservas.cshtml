@@ -1,0 +1,32 @@
+﻿@using AerolineaVIP.Models
+@model MisReservasViewModel
+@{ ViewBag.Title = "Mis reservas"; }
+<h1>Mis reservas</h1>
+<p>Se muestran únicamente las reservas de su cuenta. Filtre por fecha de viaje del primer tramo y estado. Las reservas vencidas se liberan antes de consultar.</p>
+@using (Html.BeginForm("MisReservas", "Reservas", FormMethod.Get, new { @class = "row g-3 mb-4" })) {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="col-md-3">@Html.LabelFor(m => m.Desde) @Html.TextBoxFor(m => m.Desde, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })</div>
+    <div class="col-md-3">@Html.LabelFor(m => m.Hasta) @Html.TextBoxFor(m => m.Hasta, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })</div>
+    <div class="col-md-3">@Html.LabelFor(m => m.Estado) @Html.DropDownListFor(m => m.Estado, Model.Estados, "Todos", new { @class = "form-select" })</div>
+    <div class="col-md-3 align-self-end"><button type="submit" class="btn btn-primary">Filtrar</button></div>
+}
+<p>Total: @Model.Total reservas</p>
+<div class="table-responsive"><table class="table table-striped">
+<thead><tr><th>Reserva</th><th>Viaje (primer tramo)</th><th>Ruta</th><th>Documentos</th><th>Estado Reserva</th><th>Estado Compra</th><th>Acciones</th></tr></thead>
+<tbody>
+@foreach (var reserva in Model.Reservas) {
+    <tr><td>@reserva.Codigo</td><td>@reserva.Fecha</td><td>@reserva.Ruta</td><td>@reserva.Documentos</td>
+        <td><span class="@reserva.Reserva.Clase">@reserva.Reserva.Texto</span></td>
+        <td><span class="@reserva.Compra.Clase">@reserva.Compra.Texto</span></td>
+        <td><a class="btn btn-sm btn-outline-primary" href="@Url.Action("Gestion", new { id = reserva.Id })">Ver detalle</a>
+        @if (reserva.PuedePagar) { <a class="btn btn-sm btn-primary" href="@Url.Action("Pagar", "Compra", new { id = reserva.Id })">Pagar</a> }
+        @if (reserva.PuedeCancelar) { <a class="btn btn-sm btn-outline-danger" href="@Url.Action("Gestion", new { id = reserva.Id })">Solicitar cancelación</a> }
+        </td></tr>
+}
+</tbody></table></div>
+<nav aria-label="Páginas de reservas"><ul class="pagination flex-wrap">
+@foreach (var pagina in Model.Paginas) {
+    <li class="@pagina.Clase"><a class="page-link" aria-current="@pagina.Actual" href="@Url.Action("MisReservas", new { Model.Desde, Model.Hasta, Model.Estado, Pagina = pagina.Numero })">@pagina.Numero</a></li>
+}
+</ul></nav>
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }

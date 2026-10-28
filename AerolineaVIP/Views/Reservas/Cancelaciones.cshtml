@@ -1,0 +1,9 @@
+﻿@using AerolineaVIP.Models
+@model List<GestionReservaViewModel>
+@{ ViewBag.Title = "Cancelaciones por la aerolínea"; }
+<h1>Vuelos cancelados por la aerolínea</h1>
+<p>El Administrador puede cancelar la reserva completa con reembolso simulado del 100 % cuando tiene un vuelo cancelado.</p>
+@foreach (var reserva in Model) {
+    <article class="card p-3 mb-3"><h2 class="h5">@reserva.Detalle.Codigo</h2><p>@reserva.Reembolso</p>
+        <a class="btn btn-outline-danger" href="@Url.Action("Gestion", new { id = reserva.ReservaId })">Gestionar cancelación</a></article>
+}

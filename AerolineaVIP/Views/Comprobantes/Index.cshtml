@@ -1,0 +1,28 @@
+﻿@using AerolineaVIP.Models
+@model ComprobantesViewModel
+@{ ViewBag.Title = "Comprobantes"; }
+<h1>Mis comprobantes</h1>
+<p>@ComprobanteVista.Leyenda</p>
+@using (Html.BeginForm("Index", "Comprobantes", FormMethod.Get, new { @class = "row g-3 mb-4" })) {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="col-md-3">@Html.LabelFor(m => m.Desde) @Html.TextBoxFor(m => m.Desde, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })</div>
+    <div class="col-md-3">@Html.LabelFor(m => m.Hasta) @Html.TextBoxFor(m => m.Hasta, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })</div>
+    <div class="col-md-4">@Html.LabelFor(m => m.Tipo) @Html.DropDownListFor(m => m.Tipo, Model.Tipos, "Todos", new { @class = "form-select" })</div>
+    <div class="col-md-2 align-self-end"><button class="btn btn-primary" type="submit">Filtrar</button></div>
+}
+<p>Total: @Model.Total comprobantes</p>
+<div class="table-responsive"><table class="table table-striped">
+<thead><tr><th>Número</th><th>Tipo</th><th>Reserva</th><th>Documentos</th><th>Fecha</th><th>Importe</th><th>Estado</th><th>Acciones</th></tr></thead>
+<tbody>
+@foreach (var comprobante in Model.Comprobantes) {
+    <tr><td>@comprobante.Numero</td><td>@comprobante.Tipo</td><td>@comprobante.CodigoReserva</td><td>@comprobante.Documentos</td><td>@comprobante.Fecha</td><td>@comprobante.Importe</td><td>@comprobante.Estado</td>
+        <td><a href="@Url.Action("VistaPrevia", new { id = comprobante.Id })" class="btn btn-sm btn-outline-primary">Vista previa</a>
+            <a href="@Url.Action("Descargar", new { id = comprobante.Id })" class="btn btn-sm btn-primary">Descargar PDF</a></td></tr>
+}
+</tbody></table></div>
+<nav aria-label="Páginas de comprobantes"><ul class="pagination flex-wrap">
+@foreach (var pagina in Model.Paginas) {
+    <li class="@pagina.Clase"><a class="page-link" aria-current="@pagina.Actual" href="@Url.Action("Index", new { Model.Desde, Model.Hasta, Model.Tipo, Pagina = pagina.Numero })">@pagina.Numero</a></li>
+}
+</ul></nav>
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }

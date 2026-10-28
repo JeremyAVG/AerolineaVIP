@@ -5,7 +5,8 @@
 <h1>4. Pago simulado</h1>
 <div class="alert alert-warning">SIMULACIÓN ACADÉMICA. No se realiza ningún cobro real. Use datos ficticios. Una tarjeta terminada en 0000 se rechaza.</div>
 <p>Reserva: @Model.Reserva.CodigoReserva · Estado: @Model.Reserva.EstadoReservaCodigo</p>
-<p>Vence: @Model.Reserva.ExpiracionTexto · Total USD @Model.Reserva.ImporteVigente</p>
+@if (Model.Reserva.MostrarExpiracion) { <p>Vence: @Model.Reserva.ExpiracionTexto</p> }
+<p>Total USD @Model.Reserva.ImporteVigente</p>
 @using (Html.BeginForm("Pagar", "Compra", FormMethod.Post, new { id = "formPago", autocomplete = "off" })) {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.ReservaId)

@@ -1,0 +1,41 @@
+﻿@using AerolineaVIP.Models
+@model GestionReservaViewModel
+@{ ViewBag.Title = "Gestionar reserva"; }
+<h1>Gestión de @Model.Detalle.Codigo</h1>
+@if (Model.Detalle.MostrarExpiracion) { <p>Vence: @Model.Detalle.Expiracion</p> }
+@if (TempData["Mensaje"] != null) { <div class="alert alert-success" role="status">@TempData["Mensaje"]</div> }
+@if (TempData["Error"] != null) { <div class="alert alert-danger" role="alert">@TempData["Error"]</div> }
+<div class="d-flex flex-wrap gap-3 mb-3">
+@foreach (var estado in Model.Detalle.Estados) { <span>@estado.Etiqueta: <strong class="@estado.Clase">@estado.Texto</strong></span> }
+</div>
+@Html.Partial("~/Views/Compra/_DetalleReserva.cshtml", Model.Detalle)
+<p>Total original: USD @Model.Detalle.Total</p>
+<p>@Model.Motivo</p><p>@Model.Reembolso</p>
+@foreach (var comprobante in Model.Detalle.Comprobantes) {
+    <p>@comprobante.TipoComprobanteCodigo · @comprobante.NumeroComprobante
+        <a href="@Url.Action("VistaPrevia", "Comprobantes", new { id = comprobante.ComprobanteId })">Consultar comprobante</a></p>
+}
+@if (Model.Detalle.PuedePagar) { <a class="btn btn-primary" href="@Url.Action("Pagar", "Compra", new { id = Model.ReservaId })">Pagar</a> }
+@if (Model.PuedeCancelar) {
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelar">Solicitar cancelación</button>
+    <div class="modal fade" id="modalCancelar" tabindex="-1" aria-labelledby="tituloCancelar" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+            @using (Html.BeginForm("Cancelar", "Reservas", FormMethod.Post)) {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.ReservaId)
+                <div class="modal-header"><h2 id="tituloCancelar" class="modal-title h5">Cancelar reserva completa</h2></div>
+                <div class="modal-body">
+                    <p class="alert alert-warning">@Model.Advertencia</p><p>@Model.Reembolso</p>
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.ConfirmarCancelacion, new { @class = "form-check-input" })
+                        @Html.LabelFor(m => m.ConfirmarCancelacion, "Acepto cancelar la reserva completa y liberar sus asientos.", new { @class = "form-check-label" })
+                        @Html.ValidationMessageFor(m => m.ConfirmarCancelacion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Volver</button><button class="btn btn-danger" type="submit">Confirmar cancelación</button></div>
+            }
+        </div></div>
+    </div>
+}
+<a class="btn btn-outline-secondary" href="@Url.Action("MisReservas")">Mis reservas</a>
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }

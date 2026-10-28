@@ -145,6 +145,7 @@ namespace AerolineaVIP.Models
     }
     public class FinalCompra
     {
+        public bool MostrarExpiracion { get; set; }
         public int ReservaId { get; set; }
         public string Codigo { get; set; }
         public string Mensaje { get; set; }

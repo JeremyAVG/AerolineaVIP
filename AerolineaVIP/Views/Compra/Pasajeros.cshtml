@@ -9,7 +9,8 @@
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     if (Model.EsCounter) {
         @Html.LabelFor(m => m.UsuarioCliente, "Nombre de usuario del cliente *")
-        @Html.TextBoxFor(m => m.UsuarioCliente, new { @class = "form-control", required = "required" })
+        @Html.TextBoxFor(m => m.UsuarioCliente, new { @class = "form-control", @readonly = "readonly" })
+        <a href="@Url.Action("NuevaCompra", "Reservas")">Elegir otro cliente e iniciar una nueva compra</a>
     }
     for (int i = 0; i < Model.Personas.Count; i++) {
         <fieldset class="card p-3 my-3 pasajero-compra">

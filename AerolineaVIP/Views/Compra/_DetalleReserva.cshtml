@@ -1,10 +1,10 @@
 ﻿@using AerolineaVIP.Models
 @model FinalCompra
 <div class="table-responsive"><table class="table table-striped">
-    <thead><tr><th>Tramo</th><th>Ruta</th><th>Fecha</th><th>Horario</th><th>Pasajero</th><th>Asiento</th></tr></thead>
+    <thead><tr><th>Tramo</th><th>Ruta</th><th>Fecha</th><th>Horario</th><th>Pasajero</th><th>Documento</th><th>Asiento</th></tr></thead>
     <tbody>
     @foreach (var fila in Model.Filas) {
-        <tr><td>@fila.Tramo</td><td>@fila.Ruta</td><td>@fila.Fecha</td><td>@fila.Horario</td><td>@fila.Pasajero</td><td>@fila.Asiento</td></tr>
+        <tr><td>@fila.Tramo</td><td>@fila.Ruta</td><td>@fila.Fecha</td><td>@fila.Horario</td><td>@fila.Pasajero</td><td>@fila.Documento</td><td>@fila.Asiento</td></tr>
     }
     </tbody>
 </table></div>

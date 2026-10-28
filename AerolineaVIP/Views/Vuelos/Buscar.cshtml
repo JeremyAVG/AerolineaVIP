@@ -1,5 +1,6 @@
 ﻿@using AerolineaVIP.Models
 @model BusquedaVuelosViewModel
+@if (TempData["ClienteCompra"] != null) { <div class="alert alert-info" role="status">@TempData["ClienteCompra"]</div> }
 @if (TempData["ErrorCompra"] != null) { <div class="alert alert-warning">@TempData["ErrorCompra"]</div> }
 @{
     ViewBag.Title = "Buscar vuelos";

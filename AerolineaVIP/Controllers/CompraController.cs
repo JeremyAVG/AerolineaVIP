@@ -31,12 +31,20 @@ namespace AerolineaVIP.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Iniciar(string clave, int cantidad = 1)
         {
+            var clienteCounter = Session["ClienteCounter"] as ClienteAsistido;
+            if (EsCounter && (clienteCounter == null || clienteCounter.OperadorId != User.Identity.GetUserId()))
+                return RedirectToAction("NuevaCompra", "Reservas");
             try
             {
                 Reserva.Expirar(db);
                 if (!ModelState.IsValid || cantidad < 1 || cantidad > 7) throw new InvalidOperationException("Cantidad de pasajeros inválida.");
                 var ids = (clave ?? "").Split(',').Select(int.Parse).ToList();
                 var seleccion = new SeleccionCompra { UsuarioId = User.Identity.GetUserId(), Vuelos = ids, Cantidad = cantidad };
+                if (EsCounter)
+                {
+                    if (Reserva.BuscarCliente(clienteCounter.UsuarioId, true) == null) throw new InvalidOperationException("La cuenta del cliente ya no está disponible.");
+                    seleccion.ClienteId = clienteCounter.UsuarioId;
+                }
                 Reserva.ValidarSeleccion(db, seleccion, false);
                 Seleccion = seleccion;
                 return RedirectToAction("Asientos");
@@ -79,6 +87,12 @@ namespace AerolineaVIP.Controllers
             var personas = Seleccion.Pasajeros.Count == Seleccion.Cantidad ? Seleccion.Pasajeros
                 : Enumerable.Range(0, Seleccion.Cantidad).Select(p => new PasajeroCompra()).ToList();
             var modelo = new PasajerosCompra { Personas = personas, EsCounter = EsCounter };
+            if (EsCounter)
+            {
+                var cliente = Reserva.BuscarCliente(Seleccion.ClienteId, true);
+                if (cliente == null) return RedirectToAction("NuevaCompra", "Reservas");
+                modelo.UsuarioCliente = cliente.NombreUsuario;
+            }
             Reserva.PrepararPasajeros(db, Seleccion, modelo);
             return View(modelo);
         }
@@ -100,11 +114,11 @@ namespace AerolineaVIP.Controllers
                 {
                     if (EsCounter)
                     {
-                        var cliente = identidad.Users.FirstOrDefault(u => u.UserName == model.UsuarioCliente);
+                        var cliente = identidad.Users.FirstOrDefault(u => u.Id == Seleccion.ClienteId);
                         var rol = identidad.Roles.FirstOrDefault(r => r.Name == RolesSistema.Cliente);
                         if (cliente == null || rol == null || !cliente.Roles.Any(r => r.RoleId == rol.Id))
                             ModelState.AddModelError("UsuarioCliente", "Seleccione una cuenta con rol Cliente.");
-                        else clienteId = cliente.Id;
+                        else { clienteId = cliente.Id; model.UsuarioCliente = cliente.UserName; ModelState.Remove("UsuarioCliente"); }
                     }
                     else if (!identidad.Users.Any(u => u.Id == clienteId)) ModelState.AddModelError("", "La cuenta ya no existe.");
                 }
@@ -147,6 +161,8 @@ namespace AerolineaVIP.Controllers
                     return View("Confirmar", Reserva.Resumen(db, Seleccion));
                 if (model.Clave != Seleccion.Clave || string.IsNullOrEmpty(Seleccion.ClienteId))
                     throw new InvalidOperationException("Complete los pasos anteriores.");
+                if (EsCounter && Reserva.BuscarCliente(Seleccion.ClienteId, true) == null)
+                    throw new InvalidOperationException("La cuenta seleccionada ya no tiene el rol Cliente.");
                 using (var identidad = new ApplicationDbContext())
                     if (!identidad.Users.Any(u => u.Id == Seleccion.ClienteId)) throw new InvalidOperationException("La cuenta del cliente ya no existe.");
                 Reserva.Expirar(db);
@@ -161,7 +177,7 @@ namespace AerolineaVIP.Controllers
         {
             var reserva = db.Reservas.Find(id);
             if (reserva == null) return null;
-            bool counter = EsCounter && Seleccion != null && Seleccion.ReservaId == id && Seleccion.ClienteId == reserva.UsuarioId;
+            bool counter = EsCounter && Reserva.ReservasAsistidas(Session, User.Identity.GetUserId()).Contains(id);
             return reserva.UsuarioId == User.Identity.GetUserId() || counter ? reserva : null;
         }
 

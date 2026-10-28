@@ -1,0 +1,14 @@
+﻿@using AerolineaVIP.Models
+@model NuevaCompraClienteViewModel
+@{ ViewBag.Title = "Nueva compra para un cliente"; }
+<h1>Nueva compra para un cliente</h1>
+<p>Seleccione una cuenta existente con rol Cliente. La reserva se guardará a nombre de ese cliente.</p>
+@using (Html.BeginForm("NuevaCompra", "Reservas", FormMethod.Post)) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    @Html.LabelFor(m => m.Cliente)
+    @Html.TextBoxFor(m => m.Cliente, new { @class = "form-control mb-3", maxlength = "256" })
+    <button class="btn btn-primary" type="submit">Elegir cliente y buscar vuelos</button>
+    <a class="btn btn-outline-secondary" href="@Url.Action("Asistencia")">Volver a Asistencia</a>
+}
+@section scripts { @Scripts.Render("~/bundles/jqueryval") }
