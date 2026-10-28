@@ -97,25 +97,25 @@ Política de contraseñas: mínimo 8, mayúscula, minúscula, número y símbolo
 
 ## Decisiones pendientes DP-01 a DP-15 (apartado 18.1)
 
-Las políticas del grupo **todavía no están redactadas**; van en el PDF de documentación según la guía del docente, y ninguna se presenta como aprobada. Mientras tanto el código usa estos **supuestos**, todos pendientes de aprobación:
+Las políticas están redactadas en el PDF de documentación del grupo. Son **propuestas del grupo, pendientes de aprobación**: ninguna se presenta como aprobada. El código debe seguirlas; la última columna indica qué falta implementar.
 
-| DP | Supuesto usado en el código |
-|---|---|
-| DP-01 Aeropuerto de Galápagos | Se usa GPS (Seymour), tal como viene en el script. |
-| DP-02 Asignación de los jets | Los datos de ejemplo traen asignaciones; en la app el administrador asigna la aeronave en la pantalla 18. |
-| DP-03 Tiempos de preparación | No hay intervalos definidos; solo se impide que una aeronave tenga vuelos superpuestos (trigger 50004). |
-| DP-04 Tarifas y moneda | `Ruta.TarifaReferencial` (valores de ejemplo) en USD. |
-| DP-05 Impuestos y comprobantes | Comprobantes académicos `ACAD-xxxxxx`, sin validez tributaria. |
-| DP-06 Proveedor de pagos | Pago simulado, sin pasarela real. |
-| DP-07 Duración de reserva pendiente | Existe `Reserva.FechaExpiracion`; el periodo de retención no está definido. |
-| DP-08 Cancelaciones y reembolsos | Sin definir. Las reservas con operaciones no se eliminan (se cancelarán). |
-| DP-09 Venta por tramos | Galápagos se muestra como itinerario con escala; los días en que Guayaquil es solo escala no aparecen como destino directo (`Ruta.ObtenerDestinos`). |
-| DP-10 Conexión en Guayaquil | Se considera conexión válida si el segundo tramo sale el mismo día después de la llegada del primero. |
-| DP-11 Configuración de asientos | Nomenclatura 1D, 2D, 2I, 3D, 3I, 4D, 4I del script. |
-| DP-12 Política de check-in | Sin ventana definida; la BD exige asiento CONFIRMADA (trigger 50031). |
-| DP-13 Funciones del counter | Por ahora ve lo mismo que el cliente más "Asistencia" (provisional). |
-| DP-14 Recuperación y disponibilidad | Fuera del alcance de la primera entrega. |
-| DP-15 Normativa aplicable | Fuera del alcance de la primera entrega; no se afirma cumplimiento normativo. |
+| DP | Política propuesta del grupo | Estado en el código |
+|---|---|---|
+| DP-01 Aeropuerto de Galápagos | Galápagos = aeropuerto GPS, editable en la tabla Aeropuerto. | Hecho (CRUD Aeropuertos). |
+| DP-02 Asignación de los jets | AV-01: Quito–Guayaquil 09:00 y 14:00 + ruta dominical. AV-02: Quito–Manta 09:00 y 14:00. AV-03: vuelos de 19:00 y reserva. | El administrador asigna en la pantalla 18; falta aplicar el plan a los vuelos generados. |
+| DP-03 Tiempos de preparación | 60 min de preparación entre la llegada y la siguiente salida de la misma aeronave, que debe salir del aeropuerto de llegada (`MinutosPreparacion=60` en Web.config). | **Pendiente**: agregar `MinutosPreparacion` en appSettings y validarlo al asignar aeronave (hoy solo valida superposición, trigger 50004). |
+| DP-04 Tarifas y moneda | USD; tarifa por pasajero y tramo desde `Ruta.TarifaReferencial`, copiada a `ImporteTramo` al confirmar; el importe se calcula en el servidor. | Pendiente (fase 4, confirmar reserva). |
+| DP-05 Impuestos y comprobantes | Comprobantes académicos CONFIRMACION, FACTURA (`ACAD-xxxxxx`) y NOTA_CREDITO; sin impuestos. | Pendiente (fases 5–6). |
+| DP-06 Proveedor de pagos | Pago simulado; se rechaza si la tarjeta termina en 0000; se guarda solo marca, últimos 4 dígitos, titular y el código `SIM-<CodigoReserva>-<intento>`. | Pendiente (fase 5). |
+| DP-07 Duración de reserva pendiente | Retención = la menor entre creación + 24 h y salida del primer tramo − 2 h. Las vencidas pasan a EXPIRADA y sus asientos a LIBERADA al consultar. | Pendiente (fases 4 y 6). |
+| DP-08 Cancelaciones y reembolsos | Pendiente: se cancela sin costo. Pagada: hasta 24 h antes, con reembolso simulado del 80 % (compra ANULADA, pago REVERSADO, nota de crédito). Dentro de las 24 h no se cancela por web. Vuelo cancelado por la aerolínea: reembolso del 100 % por el administrador. Siempre se cancela la reserva completa. | Pendiente (fase 6). Hoy las reservas con operaciones no se pueden eliminar. |
+| DP-09 Venta por tramos | En domingo solo se venden el itinerario de ida (tramos 1–2) y el de regreso (tramos 3–4), sin tramos sueltos. | Parcial: Home y Buscar muestran Galápagos solo con escala; falta aplicarlo en Resultados (fase 3). |
+| DP-10 Conexión en Guayaquil | Conexión en GYE de mínimo 60 min y con la misma aeronave en ambos tramos. | **Por ajustar**: `Ruta.ObtenerDestinos` hoy acepta cualquier salida posterior a la llegada (0 min) y no compara aeronaves. Corregir en la fase 3. |
+| DP-11 Configuración de asientos | Asientos 1D, 2D, 2I, 3D, 3I, 4D, 4I. | Hecho (tabla Asiento y vista `vw_AsientoAeronave`). |
+| DP-12 Política de check-in | Abre 24 h y cierra 1 h antes de cada tramo; solo asientos CONFIRMADA; se busca por código de reserva + documento; el counter puede anular un check-in. | Pendiente (fase 6). La BD ya exige asiento CONFIRMADA (trigger 50031). |
+| DP-13 Funciones del counter | El counter busca reservas, reserva y paga en nombre de un cliente con cuenta (se guarda el `UsuarioId` del cliente), registra pasajeros, hace check-in, emite comprobantes y cancela reservas pendientes. No administra vuelos, aeronaves, tarifas, usuarios ni roles, ni cancela reservas pagadas. | Pendiente (fase 7). Hoy tiene el menú del cliente + "Asistencia" provisional y no entra al área Admin. |
+| DP-14 Recuperación y disponibilidad | Fuera del alcance de la primera entrega. | — |
+| DP-15 Normativa aplicable | Fuera del alcance de la primera entrega; no se afirma cumplimiento normativo. | — |
 
 ## Convenciones implementadas
 
