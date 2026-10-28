@@ -1,0 +1,46 @@
+﻿@using AerolineaVIP.Models
+@model Vuelo
+@{
+    ViewBag.Title = "Nuevo vuelo";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-6">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger", role = "alert" })
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.FrecuenciaId, new { @class = "form-label" }) *
+            @Html.DropDownListFor(m => m.FrecuenciaId, (SelectList)ViewBag.ListaFrecuencias, "Seleccione la frecuencia", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.FrecuenciaId, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.FechaOperacion, new { @class = "form-label" }) *
+            @Html.TextBoxFor(m => m.FechaOperacion, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            @Html.ValidationMessageFor(m => m.FechaOperacion, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.AeronaveId, new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.AeronaveId, (SelectList)ViewBag.ListaAeronaves, "Sin asignar", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.AeronaveId, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.EstadoVueloCodigo, new { @class = "form-label" }) *
+            @Html.DropDownListFor(m => m.EstadoVueloCodigo, (SelectList)ViewBag.ListaEstados, "Seleccione el estado", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.EstadoVueloCodigo, "", new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+    }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

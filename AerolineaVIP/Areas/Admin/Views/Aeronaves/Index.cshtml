@@ -1,0 +1,48 @@
+@using AerolineaVIP.Models
+@model IEnumerable<Aeronave>
+@{
+    ViewBag.Title = "Aeronaves";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-1">@ViewBag.Title</h1>
+<p class="text-muted">Flota de jets privados. Capacidad máxima de siete asientos por vuelo (RN-03).</p>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success" role="status">@TempData["Mensaje"]</div>
+}
+
+<p>@Html.ActionLink("Nueva aeronave", "Create", null, new { @class = "btn btn-dorado" })</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle tabla-vip">
+        <thead>
+            <tr>
+                <th scope="col">@Html.DisplayNameFor(m => m.Matricula)</th>
+                <th scope="col">@Html.DisplayNameFor(m => m.ModeloAeronaveId)</th>
+                <th scope="col">Capacidad</th>
+                <th scope="col">@Html.DisplayNameFor(m => m.EstadoAeronaveCodigo)</th>
+                <th scope="col">Vuelos asignados desde hoy</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><strong>@item.Matricula</strong></td>
+                    <td>@item.ModeloAeronave.Fabricante @item.ModeloAeronave.Nombre</td>
+                    <td>@item.ModeloAeronave.CapacidadAsientos asientos</td>
+                    <td>@item.EstadoAeronave.Descripcion</td>
+                    <td>@item.VuelosDesdeHoy.Count</td>
+                    <td class="text-nowrap">
+                        @Html.ActionLink("Asientos y asignaciones", "Details", new { id = item.AeronaveId }) |
+                        @Html.ActionLink("Modificar estado", "Edit", new { id = item.AeronaveId }) |
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.AeronaveId })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

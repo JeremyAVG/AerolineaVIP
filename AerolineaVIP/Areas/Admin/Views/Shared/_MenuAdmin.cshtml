@@ -1,0 +1,17 @@
+<nav aria-label="Módulos de administración" class="mb-3">
+    <ol class="breadcrumb mb-2">
+        <li class="breadcrumb-item">@Html.ActionLink("Administración", "Index", "Panel")</li>
+        <li class="breadcrumb-item active" aria-current="page">@ViewBag.Title</li>
+    </ol>
+    <div class="d-flex flex-wrap gap-1 small">
+        @Html.ActionLink("Vuelos", "Index", "Vuelos", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Itinerarios", "Index", "Itinerarios", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Tramos", "Index", "TramosItinerario", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Frecuencias", "Index", "Frecuencias", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Rutas", "Index", "Rutas", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Aeropuertos", "Index", "Aeropuertos", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Aeronaves", "Index", "Aeronaves", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Usuarios, pasajeros y reservas", "Index", "Gestion", null, new { @class = "btn btn-sm btn-outline-secondary" })
+        @Html.ActionLink("Reportes", "Index", "Reportes", null, new { @class = "btn btn-sm btn-outline-secondary" })
+    </div>
+</nav>

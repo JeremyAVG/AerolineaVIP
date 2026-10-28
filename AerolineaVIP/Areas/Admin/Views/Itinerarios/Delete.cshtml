@@ -1,0 +1,29 @@
+﻿@using AerolineaVIP.Models
+@model Itinerario
+@{
+    ViewBag.Title = "Eliminar itinerario";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@Html.ValidationSummary(false, "", new { @class = "alert alert-danger", role = "alert" })
+<div class="alert alert-warning" role="status">¿Está seguro de que desea eliminar este registro? Esta acción no se puede deshacer.</div>
+
+<dl class="row">
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Referencia)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Referencia)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Nombre)</dd>
+    <dt class="col-sm-4">Recorrido</dt>
+    <dd class="col-sm-8">@Model.Recorrido</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.EstadoItinerarioCodigo)</dt>
+    <dd class="col-sm-8">@Model.EstadoItinerario.Descripcion</dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+}

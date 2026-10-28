@@ -1,0 +1,48 @@
+@using AerolineaVIP.Models
+@model BusquedaVuelosViewModel
+@{
+    ViewBag.Title = "Buscar vuelos";
+}
+
+<h1 class="h2 mb-3">@ViewBag.Title</h1>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-8">
+        <div class="card tarjeta-busqueda">
+            <div class="card-body p-4">
+                @Html.Partial("_FormularioBusqueda", Model)
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <h2 class="h5">Días de operación</h2>
+        <table class="table table-sm tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Ruta</th>
+                    <th scope="col">Días</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DestinoDisponible destino in ViewBag.Destinos)
+                {
+                    <tr>
+                        <td>
+                            Quito – @destino.Ciudad
+                            @if (destino.TieneEscala)
+                            {
+                                <br /><small class="text-muted">(escala en @destino.Escala)</small>
+                            }
+                        </td>
+                        <td>@destino.DiasTexto</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/busqueda-vuelos.js"></script>
+}

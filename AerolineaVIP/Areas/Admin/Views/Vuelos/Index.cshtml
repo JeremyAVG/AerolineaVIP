@@ -1,0 +1,118 @@
+@using AerolineaVIP.Models
+@model FiltroVuelosViewModel
+@{
+    ViewBag.Title = "Vuelos e itinerarios";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-1">@ViewBag.Title</h1>
+<p class="text-muted">Programación de vuelos a partir de las frecuencias aprobadas, asignación de aeronaves y estados.</p>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success" role="status">@TempData["Mensaje"]</div>
+}
+@Html.ValidationSummary(true, "", new { @class = "alert alert-danger", role = "alert" })
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-lg-8">
+        @using (Html.BeginForm("Index", "Vuelos", FormMethod.Get, new { @class = "filtros-vip row g-2 align-items-end h-100" }))
+        {
+            <div class="col-6 col-md-3">
+                @Html.LabelFor(m => m.Desde, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.Desde, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            </div>
+            <div class="col-6 col-md-3">
+                @Html.LabelFor(m => m.Hasta, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.Hasta, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            </div>
+            <div class="col-12 col-md-3">
+                @Html.LabelFor(m => m.RutaId, new { @class = "form-label" })
+                @Html.DropDownListFor(m => m.RutaId, (SelectList)ViewBag.ListaRutas, "Todas", new { @class = "form-select" })
+            </div>
+            <div class="col-12 col-md-3">
+                @Html.LabelFor(m => m.Estado, new { @class = "form-label" })
+                @Html.DropDownListFor(m => m.Estado, (SelectList)ViewBag.ListaEstados, "Todos", new { @class = "form-select" })
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                @Html.ActionLink("Limpiar", "Index", null, new { @class = "btn btn-outline-secondary" })
+            </div>
+        }
+    </div>
+    <div class="col-12 col-lg-4">
+        @using (Html.BeginForm("Generar", "Vuelos", FormMethod.Post, new { @class = "filtros-vip h-100" }))
+        {
+            @Html.AntiForgeryToken()
+            <h2 class="h6">Generar vuelos desde las frecuencias activas</h2>
+            <div class="row g-2">
+                <div class="col-6">
+                    @Html.LabelFor(m => m.Generar.FechaInicio, new { @class = "form-label" }) *
+                    @Html.TextBoxFor(m => m.Generar.FechaInicio, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(m => m.Generar.FechaInicio, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-6">
+                    @Html.LabelFor(m => m.Generar.FechaFin, new { @class = "form-label" }) *
+                    @Html.TextBoxFor(m => m.Generar.FechaFin, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    @Html.ValidationMessageFor(m => m.Generar.FechaFin, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dorado mt-2">Generar vuelos</button>
+        }
+    </div>
+</div>
+
+<p>
+    @Html.ActionLink("Nuevo vuelo", "Create", null, new { @class = "btn btn-outline-primary btn-sm" })
+    @Html.ActionLink("Itinerarios y tramos", "Index", "Itinerarios", null, new { @class = "btn btn-outline-primary btn-sm" })
+</p>
+
+@if (!Model.Vuelos.Any())
+{
+    <div class="alert alert-info" role="status">No hay vuelos que coincidan con los filtros seleccionados.</div>
+}
+else
+{
+    <p class="small text-muted">@Model.Vuelos.Count vuelo(s) encontrados.</p>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Vuelo</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Día</th>
+                    <th scope="col">Ruta</th>
+                    <th scope="col">Horario</th>
+                    <th scope="col">Aeronave</th>
+                    <th scope="col">Disponibles</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vuelo in Model.Vuelos)
+                {
+                    <tr>
+                        <td><strong>@vuelo.CodigoVuelo</strong></td>
+                        <td>@Html.DisplayFor(m => vuelo.FechaOperacion)</td>
+                        <td>@vuelo.Frecuencia.NombreDiaSemana</td>
+                        <td>@vuelo.Frecuencia.Ruta.Descripcion</td>
+                        <td>@vuelo.Frecuencia.Horario</td>
+                        <td>@vuelo.AeronaveTexto</td>
+                        <td>@Model.TextoDisponibles(vuelo.VueloId)</td>
+                        <td>@vuelo.EstadoVuelo.Descripcion</td>
+                        <td class="text-nowrap">
+                            @Html.ActionLink("Asignar / estado", "Edit", new { id = vuelo.VueloId }) |
+                            @Html.ActionLink("Detalles", "Details", new { id = vuelo.VueloId }) |
+                            @Html.ActionLink("Eliminar", "Delete", new { id = vuelo.VueloId })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

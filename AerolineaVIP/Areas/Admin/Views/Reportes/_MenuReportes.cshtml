@@ -1,0 +1,6 @@
+@using AerolineaVIP.Models
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">@Html.ActionLink("Ocupación por vuelo", "Ocupacion", null, new { @class = Navegacion.ClasePestana((string)ViewBag.Pestana, "ocupacion") })</li>
+    <li class="nav-item">@Html.ActionLink("Reservas por estado", "Reservas", null, new { @class = Navegacion.ClasePestana((string)ViewBag.Pestana, "reservas") })</li>
+    <li class="nav-item">@Html.ActionLink("Compras y pagos simulados", "Compras", null, new { @class = Navegacion.ClasePestana((string)ViewBag.Pestana, "compras") })</li>
+</ul>

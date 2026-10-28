@@ -1,0 +1,63 @@
+@using AerolineaVIP.Models
+@{
+    ViewBag.Title = "Administración";
+}
+
+<h1 class="h2 mb-1">@ViewBag.Title</h1>
+<p class="text-muted">Accesos a los módulos administrativos autorizados.</p>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-6">
+        <div class="card tarjeta-modulo">
+            <div class="card-body">
+                <h2 class="h5">Vuelos e itinerarios</h2>
+                <p class="text-muted small mb-3">Pantalla 18 · Programación, generación de vuelos, asignación de aeronaves y tramos.</p>
+                @Html.ActionLink("Administrar vuelos e itinerarios", "Index", "Vuelos", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card tarjeta-modulo">
+            <div class="card-body">
+                <h2 class="h5">Aeronaves</h2>
+                <p class="text-muted small mb-3">Pantalla 19 · Flota, estado operativo, distribución de asientos y asignaciones.</p>
+                @Html.ActionLink("Gestionar aeronaves", "Index", "Aeronaves", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card tarjeta-modulo">
+            <div class="card-body">
+                <h2 class="h5">Usuarios, pasajeros y reservas</h2>
+                <p class="text-muted small mb-3">Pantalla 20 · Consulta y administración de cuentas, pasajeros y reservas.</p>
+                @Html.ActionLink("Usuarios, pasajeros y reservas", "Index", "Gestion", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card tarjeta-modulo">
+            <div class="card-body">
+                <h2 class="h5">Consultas y reportes</h2>
+                <p class="text-muted small mb-3">Pantalla 21 · Ocupación por vuelo, reservas por estado y compras con pagos simulados.</p>
+                @Html.ActionLink("Consultas y reportes", "Index", "Reportes", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h5">Tablas de configuración</h2>
+<div class="d-flex flex-wrap gap-2 mb-3">
+    @Html.ActionLink("Aeropuertos", "Index", "Aeropuertos", null, new { @class = "btn btn-outline-primary btn-sm" })
+    @Html.ActionLink("Rutas", "Index", "Rutas", null, new { @class = "btn btn-outline-primary btn-sm" })
+    @Html.ActionLink("Frecuencias", "Index", "Frecuencias", null, new { @class = "btn btn-outline-primary btn-sm" })
+    @Html.ActionLink("Itinerarios", "Index", "Itinerarios", null, new { @class = "btn btn-outline-primary btn-sm" })
+    @Html.ActionLink("Tramos de itinerario", "Index", "TramosItinerario", null, new { @class = "btn btn-outline-primary btn-sm" })
+    @Html.ActionLink("Pasajeros", "Index", "Pasajeros", null, new { @class = "btn btn-outline-primary btn-sm" })
+    @Html.ActionLink("Catálogos (solo lectura)", "Index", "Catalogos", null, new { @class = "btn btn-outline-secondary btn-sm" })
+</div>
+
+@if (User.IsInRole(RolesSistema.SuperUsuario))
+{
+    <h2 class="h5">Superusuario</h2>
+    @Html.ActionLink("Crear cuenta con rol", "Register", "Account", new { area = "" }, new { @class = "btn btn-dorado btn-sm" })
+}

@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Aerolínea VIP</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-vip">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "" })">
+                <span class="marca-icono" aria-hidden="true">✈</span> AEROLÍNEA <span class="marca-vip">VIP</span>
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                    aria-controls="menuPrincipal" aria-expanded="false" aria-label="Mostrar u ocultar el menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menuPrincipal">
+                @Html.Partial("_MenuPrincipal")
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </nav>
+
+    <div id="contenido" class="container body-content flex-grow-1 py-3">
+        @RenderBody()
+    </div>
+
+    <footer class="pie-vip mt-4">
+        <div class="container py-3 d-flex flex-column flex-md-row justify-content-between gap-2">
+            <span>Proyecto académico · ESPE · Desarrollo Web para Integración de Tecnologías · Jeremy Vilaña</span>
+            <span>&copy; @DateTime.Now.Year Aerolínea VIP · Pagos simulados con fines académicos</span>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

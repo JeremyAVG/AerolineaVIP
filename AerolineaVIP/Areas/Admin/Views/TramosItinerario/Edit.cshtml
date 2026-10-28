@@ -1,0 +1,42 @@
+﻿@using AerolineaVIP.Models
+@model TramoItinerario
+@{
+    ViewBag.Title = "Editar tramo de itinerario";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-6">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger", role = "alert" })
+        @Html.HiddenFor(m => m.TramoItinerarioId)
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.ItinerarioId, new { @class = "form-label" }) *
+            @Html.DropDownListFor(m => m.ItinerarioId, (SelectList)ViewBag.ListaItinerarios, "Seleccione el itinerario", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.ItinerarioId, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.VueloId, new { @class = "form-label" }) *
+            @Html.DropDownListFor(m => m.VueloId, (SelectList)ViewBag.ListaVuelos, "Seleccione el vuelo", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.VueloId, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Orden, new { @class = "form-label" }) *
+            @Html.TextBoxFor(m => m.Orden, new { @class = "form-control", type = "number", step = "1" })
+            @Html.ValidationMessageFor(m => m.Orden, "", new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+    }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,76 @@
+## .gitignore para proyectos de Visual Studio / ASP.NET MVC (.NET Framework)
+
+# Carpetas de Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Resultados de compilación
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Paquetes NuGet (se restauran al compilar)
+packages/
+*.nupkg
+*.snupkg
+!**/packages/build/
+
+# Publicación
+PublishScripts/
+*.pubxml
+*.publishproj
+publish/
+
+# Archivos temporales y de caché
+*.tmp
+*.temp
+*.cache
+*.log
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.svclog
+*.dbmdl
+*.jfm
+~$*
+*~
+*.bak
+*.swp
+
+# IIS Express / bases locales
+.vs/config/applicationhost.config
+App_Data/*.mdf
+App_Data/*.ldf
+
+# ReSharper y otras herramientas
+_ReSharper*/
+*.DotSettings.user
+.idea/
+
+# Sistema operativo
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store

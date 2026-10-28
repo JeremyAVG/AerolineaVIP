@@ -1,0 +1,49 @@
+﻿@using AerolineaVIP.Models
+@model IEnumerable<Itinerario>
+@{
+    ViewBag.Title = "Itinerarios";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success" role="status">@TempData["Mensaje"]</div>
+}
+
+<p>@Html.ActionLink("Nuevo itinerario", "Create", null, new { @class = "btn btn-dorado" })</p>
+
+<div class="table-responsive">
+<table class="table table-striped table-hover align-middle tabla-vip">
+    <thead>
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(m => m.Referencia)</th>
+            <th scope="col">@Html.DisplayNameFor(m => m.Nombre)</th>
+            <th scope="col">Recorrido</th>
+            <th scope="col">@Html.DisplayNameFor(m => m.EstadoItinerarioCodigo)</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(m => item.Referencia)</td>
+            <td>@Html.DisplayFor(m => item.Nombre)</td>
+            <td>@item.Recorrido</td>
+            <td>@item.EstadoItinerario.Descripcion</td>
+            <td class="text-nowrap">
+                @Html.ActionLink("Editar", "Edit", new { id = item.ItinerarioId }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.ItinerarioId }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.ItinerarioId })
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="status">No hay registros que coincidan.</div>
+}

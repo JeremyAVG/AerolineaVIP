@@ -1,0 +1,85 @@
+﻿@using AerolineaVIP.Models
+@model Reserva
+
+<dl class="row">
+    <dt class="col-sm-3">Código</dt>
+    <dd class="col-sm-9"><strong>@Model.CodigoReserva</strong></dd>
+    <dt class="col-sm-3">Usuario</dt>
+    <dd class="col-sm-9">@ViewBag.Usuario</dd>
+    <dt class="col-sm-3">Creación</dt>
+    <dd class="col-sm-9">@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</dd>
+    <dt class="col-sm-3">Expiración</dt>
+    <dd class="col-sm-9">@Model.ExpiracionTexto</dd>
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">@Model.EstadoReserva.Descripcion</dd>
+    <dt class="col-sm-3">Importe vigente</dt>
+    <dd class="col-sm-9">USD @Model.ImporteVigente.ToString("N2")</dd>
+</dl>
+
+<h2 class="h5">Pasajeros y asientos</h2>
+@if (!Model.ReservaPasajeroVueloes.Any())
+{
+    <div class="alert alert-info" role="status">La reserva no tiene asientos asignados.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-striped tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Pasajero</th>
+                    <th scope="col">Vuelo</th>
+                    <th scope="col">Asiento</th>
+                    <th scope="col">Importe</th>
+                    <th scope="col">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var asignacion in Model.ReservaPasajeroVueloes)
+                {
+                    <tr>
+                        <td>@asignacion.Pasajero.NombreCompleto</td>
+                        <td>@asignacion.Vuelo.Descripcion</td>
+                        <td>@asignacion.NumeroAsiento</td>
+                        <td>@asignacion.ImporteTramo.ToString("N2")</td>
+                        <td>@asignacion.EstadoAsignacion.Descripcion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<h2 class="h5">Compras y pagos simulados</h2>
+@if (!Model.Compras.Any())
+{
+    <div class="alert alert-info" role="status">La reserva no tiene compras registradas.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-striped tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Compra</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Importe</th>
+                    <th scope="col">Estado de la compra</th>
+                    <th scope="col">Último pago</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var compra in Model.Compras)
+                {
+                    <tr>
+                        <td>@compra.CompraId</td>
+                        <td>@compra.FechaCompra.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@compra.MonedaCodigo @compra.Importe.ToString("N2")</td>
+                        <td>@compra.EstadoCompra.Descripcion</td>
+                        <td>@compra.EstadoUltimoPago</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

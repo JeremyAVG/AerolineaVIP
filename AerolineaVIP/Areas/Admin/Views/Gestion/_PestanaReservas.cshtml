@@ -1,0 +1,56 @@
+@using AerolineaVIP.Models
+@model GestionViewModel
+
+@using (Html.BeginForm("Index", "Gestion", FormMethod.Get, new { @class = "filtros-vip row g-2 align-items-end mb-3" }))
+{
+    @Html.Hidden("pestana", "reservas")
+    <div class="col-12 col-md-5">
+        <label class="form-label" for="buscar">Código de reserva</label>
+        @Html.TextBox("buscar", Model.Buscar, new { @class = "form-control", placeholder = "RV00000001" })
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label" for="estado">Estado</label>
+        @Html.DropDownList("estado", (SelectList)ViewBag.ListaEstados, "Todos", new { @class = "form-select" })
+    </div>
+    <div class="col-12 col-md-3">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+}
+
+@if (!Model.Reservas.Any())
+{
+    <div class="alert alert-info" role="status">No hay reservas que coincidan con la búsqueda.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Creación</th>
+                    <th scope="col">Pasajeros</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reserva in Model.Reservas)
+                {
+                    <tr>
+                        <td><strong>@reserva.CodigoReserva</strong></td>
+                        <td>@Model.NombreUsuario(reserva.UsuarioId)</td>
+                        <td>@reserva.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@reserva.CantidadPasajeros</td>
+                        <td>@reserva.EstadoReserva.Descripcion</td>
+                        <td class="text-nowrap">
+                            @Html.ActionLink("Detalle", "Reserva", new { id = reserva.ReservaId }) |
+                            @Html.ActionLink("Eliminar", "EliminarReserva", new { id = reserva.ReservaId })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,84 @@
+@using AerolineaVIP.Models
+@model GestionViewModel
+
+@using (Html.BeginForm("Index", "Gestion", FormMethod.Get, new { @class = "filtros-vip row g-2 align-items-end mb-3" }))
+{
+    @Html.Hidden("pestana", "usuarios")
+    <div class="col-12 col-md-5">
+        <label class="form-label" for="buscar">Buscar por usuario, nombre o correo</label>
+        @Html.TextBox("buscar", Model.Buscar, new { @class = "form-control" })
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label" for="rol">Rol</label>
+        @Html.DropDownList("rol", (SelectList)ViewBag.ListaRoles, "Todos", new { @class = "form-select" })
+    </div>
+    <div class="col-12 col-md-3">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+}
+
+@if (Model.PuedeAsignarRoles)
+{
+    <p>@Html.ActionLink("Crear cuenta con rol", "Register", "Account", new { area = "" }, new { @class = "btn btn-dorado btn-sm" })</p>
+}
+else
+{
+    <div class="alert alert-secondary small" role="note">Solo el SuperUsuario puede asignar roles.</div>
+}
+
+@if (!Model.Usuarios.Any())
+{
+    <div class="alert alert-info" role="status">No hay usuarios que coincidan con la búsqueda.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Estado</th>
+                    @if (Model.PuedeAsignarRoles)
+                    {
+                        <th scope="col">Asignar rol</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model.Usuarios)
+                {
+                    <tr>
+                        <td><strong>@usuario.UserName</strong></td>
+                        <td>@usuario.NombreCompleto</td>
+                        <td>@usuario.Email</td>
+                        <td>@usuario.Rol</td>
+                        <td>@usuario.EstadoTexto</td>
+                        @if (Model.PuedeAsignarRoles)
+                        {
+                            <td>
+                                @if (usuario.Id == Model.UsuarioActualId)
+                                {
+                                    <span class="small text-muted">(su cuenta)</span>
+                                }
+                                else
+                                {
+                                    using (Html.BeginForm("AsignarRol", "Gestion", FormMethod.Post, new { @class = "d-flex gap-1" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.Hidden("usuarioId", usuario.Id)
+                                        <label class="visually-hidden" for="rol_@usuario.UserName">Rol para @usuario.UserName</label>
+                                        @Html.DropDownList("rol", new SelectList(RolesSistema.Todos, usuario.Rol), new { @class = "form-select form-select-sm", id = "rol_" + usuario.UserName })
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Asignar</button>
+                                    }
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

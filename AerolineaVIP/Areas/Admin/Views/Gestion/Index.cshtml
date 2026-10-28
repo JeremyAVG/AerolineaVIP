@@ -1,0 +1,42 @@
+﻿@using AerolineaVIP.Models
+@model GestionViewModel
+@{
+    ViewBag.Title = "Usuarios, pasajeros y reservas";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success" role="status">@TempData["Mensaje"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">@TempData["Error"]</div>
+}
+
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        @Html.ActionLink("Usuarios", "Index", new { pestana = "usuarios" }, new { @class = Model.ClasePestana("usuarios") })
+    </li>
+    <li class="nav-item">
+        @Html.ActionLink("Pasajeros", "Index", new { pestana = "pasajeros" }, new { @class = Model.ClasePestana("pasajeros") })
+    </li>
+    <li class="nav-item">
+        @Html.ActionLink("Reservas", "Index", new { pestana = "reservas" }, new { @class = Model.ClasePestana("reservas") })
+    </li>
+</ul>
+
+@if (Model.Pestana == "usuarios")
+{
+    @Html.Partial("_PestanaUsuarios", Model)
+}
+else if (Model.Pestana == "pasajeros")
+{
+    @Html.Partial("_PestanaPasajeros", Model)
+}
+else
+{
+    @Html.Partial("_PestanaReservas", Model)
+}

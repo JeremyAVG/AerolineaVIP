@@ -1,0 +1,22 @@
+﻿@using AerolineaVIP.Models
+@model TramoItinerario
+@{
+    ViewBag.Title = "Detalle de tramo de itinerario";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+<dl class="row">
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.ItinerarioId)</dt>
+    <dd class="col-sm-8">@Model.Itinerario.Referencia · @Model.Itinerario.Nombre</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Orden)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Orden)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.VueloId)</dt>
+    <dd class="col-sm-8">@Model.Vuelo.Descripcion</dd>
+</dl>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.TramoItinerarioId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+</p>

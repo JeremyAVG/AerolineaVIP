@@ -1,0 +1,20 @@
+@using AerolineaVIP.Models
+@model Reserva
+@{
+    ViewBag.Title = "Eliminar reserva " + Model.CodigoReserva;
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@Html.ValidationSummary(false, "", new { @class = "alert alert-danger", role = "alert" })
+<div class="alert alert-warning" role="status">¿Está seguro de que desea eliminar esta reserva? Solo pueden eliminarse reservas sin asientos, compras ni pagos.</div>
+
+@Html.Partial("_DetalleReserva", Model)
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    @Html.ActionLink("Volver a reservas", "Index", new { pestana = "reservas" }, new { @class = "btn btn-outline-secondary" })
+}

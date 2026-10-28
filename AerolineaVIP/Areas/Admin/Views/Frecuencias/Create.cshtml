@@ -1,0 +1,50 @@
+﻿@using AerolineaVIP.Models
+@model Frecuencia
+@{
+    ViewBag.Title = "Nueva frecuencia";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-6">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger", role = "alert" })
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.RutaId, new { @class = "form-label" }) *
+            @Html.DropDownListFor(m => m.RutaId, (SelectList)ViewBag.ListaRutas, "Seleccione la ruta", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.RutaId, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.DiaSemana, new { @class = "form-label" }) *
+            @Html.DropDownListFor(m => m.DiaSemana, (SelectList)ViewBag.ListaDias, "Seleccione el día", new { @class = "form-select" })
+            @Html.ValidationMessageFor(m => m.DiaSemana, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.HoraSalida, new { @class = "form-label" }) *
+            @Html.TextBoxFor(m => m.HoraSalida, @"{0:hh\:mm}", new { @class = "form-control", type = "time" })
+            @Html.ValidationMessageFor(m => m.HoraSalida, "", new { @class = "text-danger" })
+        </div>
+        <div class="mb-3">
+            @Html.LabelFor(m => m.HoraLlegada, new { @class = "form-label" }) *
+            @Html.TextBoxFor(m => m.HoraLlegada, @"{0:hh\:mm}", new { @class = "form-control", type = "time" })
+            @Html.ValidationMessageFor(m => m.HoraLlegada, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-check mb-3">
+            @Html.CheckBoxFor(m => m.Activa, new { @class = "form-check-input" })
+            @Html.LabelFor(m => m.Activa, new { @class = "form-check-label" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+    }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,71 @@
+@using AerolineaVIP.Models
+@model Itinerario
+@{
+    ViewBag.Title = "Itinerario " + Model.Referencia;
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success" role="status">@TempData["Mensaje"]</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(m => m.Nombre)</dd>
+    <dt class="col-sm-3">Recorrido</dt>
+    <dd class="col-sm-9">@Model.Recorrido</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.EstadoItinerarioCodigo)</dt>
+    <dd class="col-sm-9">@Model.EstadoItinerario.Descripcion</dd>
+</dl>
+
+<h2 class="h5">Tramos</h2>
+<p class="small text-muted">Los tramos consecutivos deben ser continuos: el destino de un tramo es el origen del siguiente y la salida es posterior a la llegada (RNP-05).</p>
+<p>@Html.ActionLink("Agregar tramo", "Create", "TramosItinerario", new { itinerarioId = Model.ItinerarioId }, new { @class = "btn btn-dorado btn-sm" })</p>
+
+@if (!Model.TramosOrdenados.Any())
+{
+    <div class="alert alert-info" role="status">El itinerario todavía no tiene tramos.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Orden</th>
+                    <th scope="col">Vuelo</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Ruta</th>
+                    <th scope="col">Horario</th>
+                    <th scope="col">Aeronave</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tramo in Model.TramosOrdenados)
+                {
+                    <tr>
+                        <td>@tramo.Orden</td>
+                        <td>@tramo.Vuelo.CodigoVuelo</td>
+                        <td>@Html.DisplayFor(m => tramo.Vuelo.FechaOperacion)</td>
+                        <td>@tramo.Vuelo.Frecuencia.Ruta.Descripcion</td>
+                        <td>@tramo.Vuelo.Frecuencia.Horario</td>
+                        <td>@tramo.Vuelo.AeronaveTexto</td>
+                        <td class="text-nowrap">
+                            @Html.ActionLink("Editar", "Edit", "TramosItinerario", new { id = tramo.TramoItinerarioId }, null) |
+                            @Html.ActionLink("Eliminar", "Delete", "TramosItinerario", new { id = tramo.TramoItinerarioId }, null)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<p>
+    @Html.ActionLink("Editar itinerario", "Edit", new { id = Model.ItinerarioId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+</p>

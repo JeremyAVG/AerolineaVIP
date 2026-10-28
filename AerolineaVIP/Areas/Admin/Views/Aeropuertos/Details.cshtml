@@ -1,0 +1,24 @@
+﻿@using AerolineaVIP.Models
+@model Aeropuerto
+@{
+    ViewBag.Title = "Detalle de aeropuerto";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+<dl class="row">
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.CodigoIATA)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.CodigoIATA)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombre)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Nombre)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Localidad)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Localidad)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Activo)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Activo)</dd>
+</dl>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.AeropuertoId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+</p>

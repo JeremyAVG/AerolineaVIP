@@ -1,0 +1,15 @@
+@using AerolineaVIP.Models
+@model Reserva
+@{
+    ViewBag.Title = "Reserva " + Model.CodigoReserva;
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@Html.Partial("_DetalleReserva", Model)
+
+<p>
+    @Html.ActionLink("Eliminar", "EliminarReserva", new { id = Model.ReservaId }, new { @class = "btn btn-outline-danger" })
+    @Html.ActionLink("Volver a reservas", "Index", new { pestana = "reservas" }, new { @class = "btn btn-outline-secondary" })
+</p>

@@ -1,0 +1,32 @@
+﻿@using AerolineaVIP.Models
+@model Pasajero
+@{
+    ViewBag.Title = "Detalle de pasajero";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+<dl class="row">
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.TipoDocumentoCodigo)</dt>
+    <dd class="col-sm-8">@Model.TipoDocumentoIdentidad.Descripcion</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.NumeroDocumento)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.NumeroDocumento)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombres)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Nombres)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Apellidos)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Apellidos)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FechaNacimiento)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.FechaNacimiento)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Correo)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Correo)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Telefono)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Telefono)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FechaRegistro)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.FechaRegistro)</dd>
+</dl>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.PasajeroId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+</p>

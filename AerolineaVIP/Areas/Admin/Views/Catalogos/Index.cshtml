@@ -1,0 +1,35 @@
+@using System.Collections.Generic
+@model Dictionary<string, List<KeyValuePair<string, string>>>
+@{
+    ViewBag.Title = "Catálogos";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-1">@ViewBag.Title</h1>
+<p class="text-muted">Valores de referencia definidos en el script de la base de datos. Se muestran solo en lectura.</p>
+
+<div class="row g-3">
+    @foreach (var catalogo in Model)
+    {
+        <div class="col-12 col-md-6 col-xl-4">
+            <h2 class="h6">@catalogo.Key</h2>
+            <table class="table table-sm table-striped tabla-vip">
+                <thead>
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in catalogo.Value)
+                    {
+                        <tr>
+                            <td>@item.Key</td>
+                            <td>@item.Value</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

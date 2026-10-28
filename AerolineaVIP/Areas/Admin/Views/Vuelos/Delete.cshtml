@@ -1,0 +1,33 @@
+﻿@using AerolineaVIP.Models
+@model Vuelo
+@{
+    ViewBag.Title = "Eliminar vuelo";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@Html.ValidationSummary(false, "", new { @class = "alert alert-danger", role = "alert" })
+<div class="alert alert-warning" role="status">¿Está seguro de que desea eliminar este registro? Esta acción no se puede deshacer.</div>
+
+<dl class="row">
+    <dt class="col-sm-4">Código</dt>
+    <dd class="col-sm-8">@Model.CodigoVuelo</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FechaOperacion)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.FechaOperacion)</dd>
+    <dt class="col-sm-4">Ruta</dt>
+    <dd class="col-sm-8">@Model.Frecuencia.Ruta.Descripcion</dd>
+    <dt class="col-sm-4">Horario</dt>
+    <dd class="col-sm-8">@Model.Frecuencia.Horario</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.AeronaveId)</dt>
+    <dd class="col-sm-8">@Model.AeronaveTexto</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.EstadoVueloCodigo)</dt>
+    <dd class="col-sm-8">@Model.EstadoVuelo.Descripcion</dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+}

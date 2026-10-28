@@ -1,0 +1,154 @@
+﻿/* Identidad visual Aerolínea VIP: azul oscuro, blanco, gris y dorado */
+:root {
+    --vip-azul: #0b1f3a;
+    --vip-azul-medio: #16325c;
+    --vip-dorado: #c9a227;
+    --vip-dorado-oscuro: #a8861c;
+    --vip-gris: #6c757d;
+    --vip-gris-claro: #f3f4f6;
+}
+
+body {
+    background-color: #ffffff;
+    color: #1f2937;
+}
+
+a {
+    color: var(--vip-azul-medio);
+}
+
+:focus-visible {
+    outline: 3px solid var(--vip-dorado);
+    outline-offset: 2px;
+}
+
+/* Barra superior */
+.navbar-vip {
+    background-color: var(--vip-azul);
+    border-bottom: 3px solid var(--vip-dorado);
+}
+
+.navbar-vip .navbar-brand {
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.marca-icono,
+.marca-vip {
+    color: var(--vip-dorado);
+}
+
+.navbar-vip .nav-link {
+    color: rgba(255, 255, 255, .85);
+}
+
+.navbar-vip .nav-link:hover,
+.navbar-vip .nav-link:focus {
+    color: var(--vip-dorado);
+}
+
+/* Botones */
+.btn-primary {
+    background-color: var(--vip-azul);
+    border-color: var(--vip-azul);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--vip-azul-medio);
+    border-color: var(--vip-azul-medio);
+}
+
+.btn-dorado {
+    background-color: var(--vip-dorado);
+    border-color: var(--vip-dorado);
+    color: var(--vip-azul);
+    font-weight: 600;
+}
+
+.btn-dorado:hover,
+.btn-dorado:focus {
+    background-color: var(--vip-dorado-oscuro);
+    border-color: var(--vip-dorado-oscuro);
+    color: #ffffff;
+}
+
+/* Portada */
+.portada-vip {
+    background: linear-gradient(135deg, var(--vip-azul) 0%, var(--vip-azul-medio) 100%);
+    color: #ffffff;
+    border-radius: .75rem;
+    padding: 3rem 2rem;
+}
+
+.portada-vip .lead {
+    color: rgba(255, 255, 255, .85);
+}
+
+.linea-dorada {
+    width: 80px;
+    height: 3px;
+    background-color: var(--vip-dorado);
+    border: 0;
+    opacity: 1;
+}
+
+.tarjeta-busqueda {
+    border: 0;
+    border-top: 4px solid var(--vip-dorado);
+    box-shadow: 0 .5rem 1.5rem rgba(11, 31, 58, .12);
+}
+
+.tarjeta-destino {
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid var(--vip-dorado);
+    height: 100%;
+}
+
+.tarjeta-destino .codigo {
+    color: var(--vip-gris);
+    font-weight: 600;
+}
+
+/* Área administrativa */
+.tarjeta-modulo {
+    border: 1px solid #e5e7eb;
+    border-top: 4px solid var(--vip-azul);
+    transition: box-shadow .15s;
+    height: 100%;
+}
+
+.tarjeta-modulo:hover,
+.tarjeta-modulo:focus-within {
+    box-shadow: 0 .5rem 1rem rgba(11, 31, 58, .15);
+    border-top-color: var(--vip-dorado);
+}
+
+.tabla-vip thead th {
+    background-color: var(--vip-azul);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.filtros-vip {
+    background-color: var(--vip-gris-claro);
+    border-radius: .5rem;
+    padding: 1rem;
+}
+
+.nav-tabs .nav-link.active {
+    border-top: 3px solid var(--vip-dorado);
+    font-weight: 600;
+}
+
+/* Pie */
+.pie-vip {
+    background-color: var(--vip-azul);
+    color: rgba(255, 255, 255, .8);
+    font-size: .9rem;
+    border-top: 3px solid var(--vip-dorado);
+}
+
+.dl-horizontal dt {
+    white-space: normal;
+}

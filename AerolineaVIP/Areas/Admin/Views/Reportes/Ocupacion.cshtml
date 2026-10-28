@@ -1,0 +1,94 @@
+@using AerolineaVIP.Models
+@model ReporteOcupacionViewModel
+@{
+    ViewBag.Title = "Consultas y reportes";
+    ViewBag.Pestana = "ocupacion";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+@Html.Partial("_MenuReportes")
+
+@using (Html.BeginForm("Ocupacion", "Reportes", FormMethod.Get, new { @class = "filtros-vip row g-2 align-items-end mb-3" }))
+{
+    <div class="col-6 col-md-2">
+        @Html.LabelFor(m => m.Desde, new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.Desde, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+    <div class="col-6 col-md-2">
+        @Html.LabelFor(m => m.Hasta, new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.Hasta, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+    <div class="col-12 col-md-3">
+        @Html.LabelFor(m => m.RutaId, new { @class = "form-label" })
+        @Html.DropDownListFor(m => m.RutaId, (SelectList)ViewBag.ListaRutas, "Todas", new { @class = "form-select" })
+    </div>
+    <div class="col-6 col-md-2">
+        @Html.LabelFor(m => m.AeronaveId, new { @class = "form-label" })
+        @Html.DropDownListFor(m => m.AeronaveId, (SelectList)ViewBag.ListaAeronaves, "Todas", new { @class = "form-select" })
+    </div>
+    <div class="col-6 col-md-2">
+        @Html.LabelFor(m => m.Estado, new { @class = "form-label" })
+        @Html.DropDownListFor(m => m.Estado, (SelectList)ViewBag.ListaEstados, "Todos", new { @class = "form-select" })
+    </div>
+    <div class="col-12 col-md-1">
+        <button type="submit" class="btn btn-primary w-100">Consultar</button>
+    </div>
+}
+
+<p class="small text-muted mb-2">
+    Fecha de corte: <strong>@Model.FechaCorte.ToString("dd/MM/yyyy HH:mm")</strong>.
+    Ocupados = asientos en estado pendiente (reservado) o confirmado (pagado). Fuente: vista vw_DisponibilidadVuelo.
+</p>
+
+@if (!Model.Filas.Any())
+{
+    <div class="alert alert-info" role="status">No hay vuelos que coincidan con los filtros seleccionados.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-sm align-middle tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Vuelo</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Ruta</th>
+                    <th scope="col">Horario</th>
+                    <th scope="col">Aeronave</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col" class="text-end">Capacidad</th>
+                    <th scope="col" class="text-end">Ocupados</th>
+                    <th scope="col" class="text-end">Disponibles</th>
+                    <th scope="col" class="text-end">% ocupación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var fila in Model.Filas)
+                {
+                    <tr>
+                        <td>@fila.CodigoVuelo</td>
+                        <td>@fila.FechaOperacion.ToString("dd/MM/yyyy")</td>
+                        <td>@fila.RutaTexto</td>
+                        <td>@fila.Horario</td>
+                        <td>@fila.Matricula</td>
+                        <td>@fila.EstadoVueloCodigo</td>
+                        <td class="text-end">@fila.Capacidad</td>
+                        <td class="text-end">@fila.Ocupados</td>
+                        <td class="text-end">@fila.Disponibles</td>
+                        <td class="text-end">@fila.PorcentajeOcupacion.ToString("N1") %</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold">
+                    <td colspan="6">Total (@Model.Filas.Count vuelos)</td>
+                    <td class="text-end">@Model.TotalCapacidad</td>
+                    <td class="text-end">@Model.TotalOcupados</td>
+                    <td class="text-end">@Model.TotalDisponibles</td>
+                    <td class="text-end">@Model.PorcentajeGeneral.ToString("N1") %</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}

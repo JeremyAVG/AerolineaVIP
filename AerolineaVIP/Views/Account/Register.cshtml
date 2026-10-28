@@ -1,0 +1,96 @@
+﻿@using AerolineaVIP.Models
+@model RegisterViewModel
+@{
+    ViewBag.Title = "Crear cuenta";
+}
+
+<main aria-labelledby="title">
+    <h1 id="title" class="h2 mt-4 mb-3">@ViewBag.Title</h1>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success" role="alert">@TempData["Mensaje"]</div>
+    }
+
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger", role = "alert" })
+
+        <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+                @Html.LabelFor(m => m.Nombres, new { @class = "form-label" }) *
+                @Html.TextBoxFor(m => m.Nombres, new { @class = "form-control", placeholder = "Ej.: María José" })
+                @Html.ValidationMessageFor(m => m.Nombres, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                @Html.LabelFor(m => m.Apellidos, new { @class = "form-label" }) *
+                @Html.TextBoxFor(m => m.Apellidos, new { @class = "form-control", placeholder = "Ej.: Pérez Torres" })
+                @Html.ValidationMessageFor(m => m.Apellidos, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                @Html.LabelFor(m => m.UserName, new { @class = "form-label" }) *
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", autocomplete = "username" })
+                <div class="form-text">De 4 a 50 caracteres: letras, números, punto o guion bajo.</div>
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                @Html.LabelFor(m => m.Email, new { @class = "form-label" }) *
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "correo@ejemplo.com" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                @Html.LabelFor(m => m.Password, new { @class = "form-label" }) *
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", autocomplete = "new-password" })
+                <div class="form-text">Mínimo 8 caracteres, con mayúscula, minúscula, número y símbolo.</div>
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" }) *
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", autocomplete = "new-password" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+                @Html.LabelFor(m => m.Rol, new { @class = "form-label" }) *
+                @if (ViewBag.PuedeElegirRol)
+                {
+                    @Html.DropDownListFor(m => m.Rol, (SelectList)ViewBag.Roles, new { @class = "form-select" })
+                }
+                else
+                {
+                    @Html.DropDownListFor(m => m.Rol, (SelectList)ViewBag.Roles, new { @class = "form-select", disabled = "disabled" })
+                }
+                <div class="form-text">Visitante: solo Cliente. Otros roles: solo SuperUsuario.</div>
+                @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="border rounded p-3 mb-3 bg-light" style="max-height: 150px; overflow-y: auto;" tabindex="0" aria-label="Aviso de privacidad y condiciones">
+            <h2 class="h6">Aviso de privacidad y condiciones</h2>
+            <p class="small mb-1">
+                Los datos registrados (nombres, apellidos, usuario y correo) se usan solo para gestionar su cuenta,
+                sus reservas y sus compras dentro de este sistema académico.
+            </p>
+            <p class="small mb-1">
+                Los pagos de este sistema son simulados con fines académicos: no se realizan cobros reales
+                ni se almacenan datos completos de tarjetas.
+            </p>
+            <p class="small mb-0">
+                Las reservas y compras quedan sujetas a la programación de vuelos y a la disponibilidad real de asientos.
+            </p>
+        </div>
+
+        <div class="form-check mb-3">
+            @Html.CheckBoxFor(m => m.AceptaCondiciones, new { @class = "form-check-input" })
+            @Html.LabelFor(m => m.AceptaCondiciones, new { @class = "form-check-label" }) *
+            <div>@Html.ValidationMessageFor(m => m.AceptaCondiciones, "", new { @class = "text-danger" })</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Crear cuenta</button>
+        @Html.ActionLink("Cancelar", "Index", "Home", null, new { @class = "btn btn-outline-secondary" })
+    }
+</main>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

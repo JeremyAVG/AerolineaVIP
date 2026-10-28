@@ -1,0 +1,11 @@
+@{
+    ViewBag.Title = "Acceso no autorizado";
+}
+
+<h1 class="h2 mb-3">@ViewBag.Title</h1>
+
+<div class="alert alert-danger" role="alert">
+    No tiene permisos para acceder a esta sección.
+</div>
+
+@Html.ActionLink("Volver al inicio", "Index", "Home", new { area = "" }, new { @class = "btn btn-outline-secondary" })

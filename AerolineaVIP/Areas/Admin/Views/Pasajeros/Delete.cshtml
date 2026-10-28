@@ -1,0 +1,37 @@
+﻿@using AerolineaVIP.Models
+@model Pasajero
+@{
+    ViewBag.Title = "Eliminar pasajero";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+@Html.ValidationSummary(false, "", new { @class = "alert alert-danger", role = "alert" })
+<div class="alert alert-warning" role="status">¿Está seguro de que desea eliminar este registro? Esta acción no se puede deshacer.</div>
+
+<dl class="row">
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.TipoDocumentoCodigo)</dt>
+    <dd class="col-sm-8">@Model.TipoDocumentoIdentidad.Descripcion</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.NumeroDocumento)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.NumeroDocumento)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nombres)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Nombres)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Apellidos)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Apellidos)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FechaNacimiento)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.FechaNacimiento)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Correo)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Correo)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Telefono)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Telefono)</dd>
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.FechaRegistro)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.FechaRegistro)</dd>
+</dl>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+}

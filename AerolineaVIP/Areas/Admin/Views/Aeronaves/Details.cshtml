@@ -1,0 +1,87 @@
+@using AerolineaVIP.Models
+@model Aeronave
+@{
+    ViewBag.Title = "Aeronave " + Model.Matricula;
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.ModeloAeronaveId)</dt>
+    <dd class="col-sm-9">@Model.ModeloAeronave.Fabricante @Model.ModeloAeronave.Nombre</dd>
+    <dt class="col-sm-3">Capacidad</dt>
+    <dd class="col-sm-9">@Model.ModeloAeronave.CapacidadAsientos asientos</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.EstadoAeronaveCodigo)</dt>
+    <dd class="col-sm-9">@Model.EstadoAeronave.Descripcion</dd>
+</dl>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-5">
+        <h2 class="h5">Distribución de asientos (solo lectura)</h2>
+        <p class="small text-muted">Propuesta DP-11: código = fila + lado (D derecho, I izquierdo). No existe 1I por la puerta de acceso.</p>
+        <table class="table table-sm tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">N.º</th>
+                    <th scope="col">Código</th>
+                    <th scope="col">Fila</th>
+                    <th scope="col">Lado</th>
+                    <th scope="col">Ubicación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (vw_AsientoAeronave asiento in ViewBag.Asientos)
+                {
+                    <tr>
+                        <td>@asiento.NumeroAsiento</td>
+                        <td><strong>@asiento.CodigoAsiento</strong></td>
+                        <td>@asiento.Fila</td>
+                        <td>@asiento.Lado</td>
+                        <td>@asiento.Ubicacion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-12 col-lg-7">
+        <h2 class="h5">Vuelos asignados desde hoy</h2>
+        @if (ViewBag.Vuelos.Count == 0)
+        {
+            <div class="alert alert-info" role="status">La aeronave no tiene vuelos asignados desde hoy.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-striped tabla-vip">
+                    <thead>
+                        <tr>
+                            <th scope="col">Vuelo</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Ruta</th>
+                            <th scope="col">Horario</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Vuelo vuelo in ViewBag.Vuelos)
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(vuelo.CodigoVuelo, "Details", "Vuelos", new { id = vuelo.VueloId }, null)</td>
+                                <td>@vuelo.FechaOperacion.ToString("dd/MM/yyyy")</td>
+                                <td>@vuelo.Frecuencia.Ruta.Descripcion</td>
+                                <td>@vuelo.Frecuencia.Horario</td>
+                                <td>@vuelo.EstadoVuelo.Descripcion</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<p class="mt-3">
+    @Html.ActionLink("Modificar estado", "Edit", new { id = Model.AeronaveId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Volver a la flota", "Index", null, new { @class = "btn btn-outline-secondary" })
+</p>

@@ -1,0 +1,20 @@
+@using AerolineaVIP.Models
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+    <li class="nav-item">@Html.ActionLink("Vuelos", "Buscar", "Vuelos", new { area = "" }, new { @class = "nav-link" })</li>
+
+    @if (User.IsInRole(RolesSistema.Administrador) || User.IsInRole(RolesSistema.SuperUsuario))
+    {
+        <li class="nav-item">@Html.ActionLink("Administración", "Index", "Panel", new { area = "Admin" }, new { @class = "nav-link" })</li>
+    }
+    else if (User.IsInRole(RolesSistema.Cliente) || User.IsInRole(RolesSistema.EmpleadoCounter))
+    {
+        <li class="nav-item">@Html.ActionLink("Mis reservas", "MisReservas", "Reservas", new { area = "" }, new { @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("Check-in", "Index", "CheckIn", new { area = "" }, new { @class = "nav-link" })</li>
+        <li class="nav-item">@Html.ActionLink("Comprobantes", "Index", "Comprobantes", new { area = "" }, new { @class = "nav-link" })</li>
+        if (User.IsInRole(RolesSistema.EmpleadoCounter))
+        {
+            <li class="nav-item">@Html.ActionLink("Asistencia", "Asistencia", "Reservas", new { area = "" }, new { @class = "nav-link" })</li>
+        }
+    }
+</ul>

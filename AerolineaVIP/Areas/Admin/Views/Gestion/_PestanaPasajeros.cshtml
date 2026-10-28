@@ -1,0 +1,55 @@
+﻿@using AerolineaVIP.Models
+@model GestionViewModel
+
+@using (Html.BeginForm("Index", "Gestion", FormMethod.Get, new { @class = "filtros-vip row g-2 align-items-end mb-3" }))
+{
+    @Html.Hidden("pestana", "pasajeros")
+    <div class="col-12 col-md-6">
+        <label class="form-label" for="buscar">Buscar por documento, nombres o apellidos</label>
+        @Html.TextBox("buscar", Model.Buscar, new { @class = "form-control" })
+    </div>
+    <div class="col-12 col-md-3">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+}
+
+<p>@Html.ActionLink("Nuevo pasajero", "Create", "Pasajeros", null, new { @class = "btn btn-dorado btn-sm" })</p>
+
+@if (!Model.Pasajeros.Any())
+{
+    <div class="alert alert-info" role="status">No hay pasajeros que coincidan con la búsqueda.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle tabla-vip">
+            <thead>
+                <tr>
+                    <th scope="col">Documento</th>
+                    <th scope="col">Nombre completo</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Reservas</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pasajero in Model.Pasajeros)
+                {
+                    <tr>
+                        <td>@pasajero.TipoDocumentoIdentidad.Descripcion: @pasajero.NumeroDocumento</td>
+                        <td>@pasajero.NombreCompleto</td>
+                        <td>@pasajero.Correo</td>
+                        <td>@pasajero.Telefono</td>
+                        <td>@pasajero.ReservasTexto</td>
+                        <td class="text-nowrap">
+                            @Html.ActionLink("Editar", "Edit", "Pasajeros", new { id = pasajero.PasajeroId }, null) |
+                            @Html.ActionLink("Detalles", "Details", "Pasajeros", new { id = pasajero.PasajeroId }, null) |
+                            @Html.ActionLink("Eliminar", "Delete", "Pasajeros", new { id = pasajero.PasajeroId }, null)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

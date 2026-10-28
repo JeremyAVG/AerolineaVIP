@@ -1,0 +1,64 @@
+@using AerolineaVIP.Models
+@model ReporteReservasViewModel
+@{
+    ViewBag.Title = "Consultas y reportes";
+    ViewBag.Pestana = "reservas";
+}
+
+@Html.Partial("_MenuAdmin")
+<h1 class="h3 mb-3">@ViewBag.Title</h1>
+@Html.Partial("_MenuReportes")
+
+@using (Html.BeginForm("Reservas", "Reportes", FormMethod.Get, new { @class = "filtros-vip row g-2 align-items-end mb-3" }))
+{
+    <div class="col-6 col-md-3">
+        @Html.LabelFor(m => m.Desde, new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.Desde, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+    <div class="col-6 col-md-3">
+        @Html.LabelFor(m => m.Hasta, new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.Hasta, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+    <div class="col-12 col-md-2">
+        <button type="submit" class="btn btn-primary">Consultar</button>
+    </div>
+}
+
+<p class="small text-muted mb-2">
+    Fecha de corte: <strong>@Model.FechaCorte.ToString("dd/MM/yyyy HH:mm")</strong>.
+    Asientos = registros de pasajero por vuelo de cada reserva, en cualquier estado. Importe = suma de los importes por tramo (valores de ejemplo, DP-04).
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle tabla-vip">
+        <thead>
+            <tr>
+                <th scope="col">Estado</th>
+                <th scope="col">Descripción</th>
+                <th scope="col" class="text-end">Reservas</th>
+                <th scope="col" class="text-end">Asientos</th>
+                <th scope="col" class="text-end">Importe (USD)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var fila in Model.Filas)
+            {
+                <tr>
+                    <td>@fila.Codigo</td>
+                    <td>@fila.Descripcion</td>
+                    <td class="text-end">@fila.Cantidad</td>
+                    <td class="text-end">@fila.Asientos</td>
+                    <td class="text-end">@fila.Importe.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="fw-bold">
+                <td colspan="2">Total</td>
+                <td class="text-end">@Model.TotalReservas</td>
+                <td class="text-end">@Model.TotalAsientos</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
