@@ -22,7 +22,7 @@ namespace AerolineaVIP.Controllers
             return View(model);
         }
 
-        // GET: Vuelos/Resultados (pantalla 6, se completa en la fase 3)
+        // GET: Vuelos/Resultados (pantalla 6)
         public ActionResult Resultados(BusquedaVuelosViewModel model)
         {
             if (model.OrigenId.HasValue && model.DestinoId.HasValue)

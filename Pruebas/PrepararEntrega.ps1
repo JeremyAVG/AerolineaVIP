@@ -3,14 +3,18 @@ $ErrorActionPreference = 'Stop'
 $raiz = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent)).TrimEnd('\')
 $destinoFinal = [IO.Path]::GetFullPath($Destino)
 if (Test-Path -LiteralPath $destinoFinal) { throw 'El archivo de destino ya existe; use una ruta nueva para no sobrescribirlo.' }
-$excluidas = @('.git', '.vs', 'bin', 'obj', 'packages')
+$excluidas = @('.git', '.vs', 'bin', 'obj', 'packages', '.claude', '.codex', '.agents')
+$archivosInternos = @('CLAUDE.md', 'AGENTS.md', 'Documentacion/Revision_Final.md', 'Documentacion/Inventario_Vistas.md', 'Pruebas/RevisionEntrega.ps1', 'Pruebas/PrepararEntrega.ps1')
 function ArchivosFuente([string]$directorio) {
     foreach ($elemento in Get-ChildItem -LiteralPath $directorio -Force) {
         if (($elemento.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw "Revise el enlace antes de empaquetar: $($elemento.FullName)" }
         if ($elemento.PSIsContainer) {
             if ($excluidas -notcontains $elemento.Name) { ArchivosFuente $elemento.FullName }
         }
-        elseif ($elemento.FullName -ne $destinoFinal) { $elemento }
+        elseif ($elemento.FullName -ne $destinoFinal) {
+            $relativo = $elemento.FullName.Substring($raiz.Length + 1).Replace('\', '/')
+            if ($archivosInternos -notcontains $relativo -and $elemento.Name -notlike '*.user') { $elemento }
+        }
     }
 }
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -29,6 +33,7 @@ $sha = [Security.Cryptography.SHA256]::Create()
 try {
     if ($lectura.Entries.Count -ne $archivos.Count) { throw 'El número de archivos del ZIP no coincide con las fuentes.' }
     foreach ($entrada in $lectura.Entries) {
+        if ($archivosInternos -contains $entrada.FullName) { throw "Archivo interno dentro del ZIP: $($entrada.FullName)" }
         $segmentos = $entrada.FullName.Split('/')
         foreach ($segmento in $segmentos) { if ($excluidas -contains $segmento) { throw "Carpeta excluida dentro del ZIP: $($entrada.FullName)" } }
         $fuente = Join-Path $raiz $entrada.FullName.Replace('/', '\')

@@ -1,4 +1,4 @@
-# Aerolínea VIP
+﻿# Aerolínea VIP
 
 Sistema web monolítico para la compra, reserva y administración de pasajes de una aerolínea VIP.
 ASP.NET MVC 5 · .NET Framework 4.8.1 · Razor · Bootstrap · jQuery · ASP.NET Identity · SQL Server.
@@ -34,26 +34,33 @@ ASP.NET MVC 5 · .NET Framework 4.8.1 · Razor · Bootstrap · jQuery · ASP.NET
 
 El inicio de sesión es con **nombre de usuario**. El registro público siempre crea cuentas con rol Cliente; solo el SuperUsuario puede crear cuentas con otros roles.
 
-## Antes de entregar
+## Funcionalidades
 
-En `Web.config` las dos cadenas de conexión deben quedar con **`Data Source=.`**.
+- Consulta de vuelos, disponibilidad y selección de asientos por tramo.
+- Registro de pasajeros, reservas y pago simulado.
+- Consulta y cancelación de reservas según sus condiciones.
+- Check-in y comprobantes académicos con descarga en PDF.
+- Asistencia del counter para atender reservas y comprar para clientes existentes.
+- Administración de vuelos, aeronaves, rutas, frecuencias, itinerarios y pasajeros.
 
-La revisión de los 12 entregables, la tabla de las 21 pantallas con rutas reales y el mapa de navegación están en [Documentacion/Revision_Final.md](Documentacion/Revision_Final.md). El inventario de las 105 vistas revisadas está en [Documentacion/Inventario_Vistas.md](Documentacion/Inventario_Vistas.md). Puede repetir la auditoría con `Pruebas\RevisionEntrega.ps1`.
+El Administrador atiende los vuelos cancelados desde «Cancelaciones». El counter accede a «Asistencia» y solo puede cancelar reservas pendientes vigentes. La asignación de aeronaves se realiza manualmente por el Administrador.
 
-El cierre compila también las vistas Razor y ejecuta ambas integraciones, más `Pruebas\Navegacion.Integracion.ps1`. Para preparar y verificar un ZIP de fuentes use `Pruebas\PrepararEntrega.ps1 -Destino ruta-nueva.zip`; no sobrescribe archivos existentes y compara por SHA-256 cada archivo empaquetado.
+## Alcance académico
 
-El ZIP de fuentes excluye `.git`, `.vs`, `bin`, `obj` y `packages`; antes de compilar una copia extraída restaure NuGet. La asignación de aeronaves del plan propuesto DP-02 sigue siendo manual por el Administrador; no se automatiza al generar vuelos. Los PDF oficiales no están incluidos en el repositorio y no se afirma un contraste literal con ellos.
+Los pagos y reembolsos son simulados; no se procesa dinero real. La recuperación de acceso genera un token sin enviar correo. Los comprobantes no tienen validez tributaria. Las políticas operativas DP son propuestas del grupo.
 
-## Más información
+La configuración de entrega usa la instancia predeterminada de SQL Server (`Data Source=.`). Ajuste las dos conexiones de `Web.config` si utiliza otro servidor.
 
-FASE 4 (pantallas 13–16): Mis reservas, gestión y cancelación con reembolso simulado, check-in y comprobantes propios con filtros, vista previa y descarga PDF. El Administrador accede a «Cancelaciones» para vuelos cancelados por la aerolínea. La nota de crédito muestra el importe reembolsado; la compra conserva el total original y el pago reversado registra el reembolso.
+## Documentación y pruebas
 
-Con `counter01`, «Asistencia» permite buscar por código o documento y gestionar, pagar o hacer check-in de la reserva encontrada. «Nueva compra para un cliente» acepta el usuario o correo de una cuenta Cliente existente y conserva su titularidad durante la compra. El counter cancela únicamente pendientes vigentes y no accede a Admin. Mis reservas filtra por fecha del primer tramo; el vencimiento solo aparece en pendientes y los tipos de documento se muestran con sus nombres legibles.
+El [manual técnico](Documentacion/Manual_Tecnico.md) contiene las rutas de las 21 pantallas, el mapa de navegación y las condiciones de uso.
 
-La generación de PDF usa [PDFsharp 1.50.5147](https://www.nuget.org/packages/PDFsharp/1.50.5147), restaurable desde NuGet. No se requieren cambios de base de datos. Prueba reproducible: `Pruebas\AreaCliente.Integracion.ps1 -BaseUrl http://localhost:59817` con la aplicación iniciada; elimina sus datos temporales al terminar.
+Con la aplicación iniciada puede ejecutar:
 
-El flujo de compra (pantallas 4–12) está implementado y probado por el grupo: búsqueda y disponibilidad, selección por tramo, pasajeros, reserva, pago simulado y confirmación con comprobantes académicos. Incluye ajustes visuales y validaciones solicitadas para los wireframes. La recuperación de acceso genera un token sin enviar correo. Las políticas DP siguen siendo propuestas del grupo.
+- `Pruebas\FlujoCompra.Integracion.ps1 -BaseUrl http://localhost:59817`
+- `Pruebas\AreaCliente.Integracion.ps1 -BaseUrl http://localhost:59817`
+- `Pruebas\Navegacion.Integracion.ps1 -BaseUrl http://localhost:59817`
 
-Para ejecutar la prueba de integración con la aplicación iniciada, use `Pruebas\FlujoCompra.Integracion.ps1 -BaseUrl http://localhost:59817` (ajuste la URL a su instancia). La prueba utiliza las cadenas de Web.config y elimina sus propios registros temporales al terminar. Para el commit de FASE 3 el grupo autorizó incluir la configuración académica local de Web.config; no se realiza push.
+Ajuste la URL a su instancia local. Las pruebas de compra y área del cliente utilizan las cuentas iniciales y eliminan sus registros temporales al terminar.
 
-Las reglas del docente, el estado de cada fase y las convenciones del código están en `CLAUDE.md`.
+El ZIP contiene las fuentes y ambos scripts de base de datos. Antes de compilar una copia extraída debe restaurar los paquetes NuGet. Los PDF se generan con PDFsharp 1.50.5147.
