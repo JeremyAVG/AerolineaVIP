@@ -16,6 +16,7 @@ namespace AerolineaVIP.Models
 
     public class ManageLoginsViewModel
     {
+        public bool TieneProveedores { get; set; }
         public IList<UserLoginInfo> CurrentLogins { get; set; }
         public IList<AuthenticationDescription> OtherLogins { get; set; }
     }

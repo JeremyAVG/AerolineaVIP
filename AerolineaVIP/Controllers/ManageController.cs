@@ -295,7 +295,8 @@ namespace AerolineaVIP.Controllers
             return View(new ManageLoginsViewModel
             {
                 CurrentLogins = userLogins,
-                OtherLogins = otherLogins
+                OtherLogins = otherLogins,
+                TieneProveedores = AuthenticationManager.GetExternalAuthenticationTypes().Any()
             });
         }
 

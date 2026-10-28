@@ -13,11 +13,16 @@
 <p role="status">Hora de cálculo: @Model.Calculado</p>
 <div class="d-flex flex-wrap gap-2">
     <a class="btn btn-outline-primary" href="@Url.Action("Disponibilidad", new { clave = Model.Opcion.Clave, cantidad = Model.Opcion.Pasajeros })">Actualizar disponibilidad</a>
-    @using (Html.BeginForm("Iniciar", "Compra", FormMethod.Post)) {
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="clave" value="@Model.Opcion.Clave" />
-        <input type="hidden" name="cantidad" value="@Model.Opcion.Pasajeros" />
-        <button class="btn btn-primary" type="submit" disabled="@Model.SinCupos">Continuar</button>
+    @if (Request.IsAuthenticated) {
+        using (Html.BeginForm("Iniciar", "Compra", FormMethod.Post)) {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="clave" value="@Model.Opcion.Clave" />
+            <input type="hidden" name="cantidad" value="@Model.Opcion.Pasajeros" />
+            <button class="btn btn-primary" type="submit" disabled="@Model.SinCupos">Continuar</button>
+        }
+    }
+    else {
+        <a class="btn btn-primary" href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("Disponibilidad", new { clave = Model.Opcion.Clave, cantidad = Model.Opcion.Pasajeros }) })">Iniciar sesión para continuar</a>
     }
     <a class="btn btn-outline-secondary" href="@Url.Action("Resultados", new { OrigenId = Model.OrigenId, DestinoId = Model.DestinoId, Fecha = Model.Fecha, Pasajeros = Model.Opcion.Pasajeros })">Regresar a resultados</a>
 </div>

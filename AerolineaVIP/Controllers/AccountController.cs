@@ -53,6 +53,16 @@ namespace AerolineaVIP.Controllers
         }
 
         //
+        [ChildActionOnly, AllowAnonymous]
+        public PartialViewResult ProveedoresExternos(string returnUrl)
+        {
+            return PartialView("_ExternalLoginsListPartial", new ExternalLoginListViewModel
+            {
+                ReturnUrl = returnUrl,
+                Proveedores = AuthenticationManager.GetExternalAuthenticationTypes().ToList()
+            });
+        }
+
         // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)

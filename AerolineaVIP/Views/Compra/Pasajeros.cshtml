@@ -16,7 +16,7 @@
         <fieldset class="card p-3 my-3 pasajero-compra">
             <legend class="h5">@Model.Personas[i].Titulo</legend>
             @Html.LabelFor(m => m.Personas[i].TipoDocumento, "Tipo de documento *")
-            @Html.DropDownListFor(m => m.Personas[i].TipoDocumento, new SelectList(new[] { new { Value = "CEDULA", Text = "Cédula" }, new { Value = "PASAPORTE", Text = "Pasaporte" } }, "Value", "Text", Model.Personas[i].TipoDocumento), new { @class = "form-select tipo-documento" })
+            @Html.DropDownListFor(m => m.Personas[i].TipoDocumento, Model.Personas[i].TiposDocumento, new { @class = "form-select tipo-documento" })
             @Html.LabelFor(m => m.Personas[i].Documento, "Documento *")
             @Html.TextBoxFor(m => m.Personas[i].Documento, new { @class = "form-control documento", maxlength = "20" })
             @Html.ValidationMessageFor(m => m.Personas[i].Documento)

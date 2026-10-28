@@ -12,6 +12,7 @@ namespace AerolineaVIP.Models
 
     public class ExternalLoginListViewModel
     {
+        public IList<Microsoft.Owin.Security.AuthenticationDescription> Proveedores { get; set; } = new List<Microsoft.Owin.Security.AuthenticationDescription>();
         public string ReturnUrl { get; set; }
     }
 

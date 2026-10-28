@@ -1,8 +1,8 @@
-# Proyecto Aerolínea VIP — Primera Entrega
+﻿# Proyecto Aerolínea VIP — Primera Entrega
 
 Sistema web monolítico ASP.NET MVC 5 (.NET Framework 4.8.1) para compra, reserva y administración de pasajes de una aerolínea VIP (3 Embraer Phenom 300E, 7 asientos por vuelo).
 
-- Autor del proyecto: **Jeremy Vilaña**.
+- Autores del proyecto: **Jeremy Alexander Vilaña Guamán y Amaro Benjamin Caiza Sandoval**.
 - Fecha de entrega: miércoles 28 de octubre de 2026.
 - Solución: `AerolineaVIP.slnx` (formato VS 2026) · Proyecto: `AerolineaVIP\AerolineaVIP.csproj` (csproj clásico: todo archivo nuevo debe agregarse al csproj).
 - Script de base de datos: `BaseDatos\Script_BD_AerolineaVIP.sql` (crea `AerolineaVIP` y `AerolineaVIP_Identity`) y luego `AerolineaVIP\Scripts\Ampliar_AspNetUsers.sql`.
@@ -20,7 +20,7 @@ Sistema web monolítico ASP.NET MVC 5 (.NET Framework 4.8.1) para compra, reserv
 
 ## REGLAS OBLIGATORIAS DEL DOCENTE
 
-1. **Autor**: Jeremy Vilaña. Por instrucción expresa del grupo, el pie de página muestra «Jeremy Alexander Vilaña Guamán · Amaro Benjamin Caiza Sandoval».
+1. **Autores**: Jeremy Alexander Vilaña Guamán y Amaro Benjamin Caiza Sandoval. El pie de página muestra ambos nombres.
 2. **Vistas Razor**: primero `@using Namespace` y en la línea siguiente `@model Tipo`. NUNCA `@model Namespace.Completo.Tipo` en una sola línea.
    ```cshtml
    @using AerolineaVIP.Models
@@ -32,7 +32,7 @@ Sistema web monolítico ASP.NET MVC 5 (.NET Framework 4.8.1) para compra, reserv
 6. **Alcance**: sin dashboard (la pantalla 17 es solo una página de accesos), sin auditoría, sin bloqueos de concurrencia (la selección de asientos es temporal y el servidor revalida), pagos solo simulados.
 7. **EDMX**: no modificar `Models/AerolineaVIPModel.edmx` a mano. Si hace falta un dato, usar las vistas existentes: `vw_VueloDetalle`, `vw_EstadoAsientoVuelo`, `vw_DisponibilidadVuelo`, `vw_AsientoAeronave`, `vw_ComprobanteDetalle`. Los procedimientos almacenados se llaman con `db.Database.ExecuteSqlCommand`.
 8. **Estilo de código**: en español, simple y legible, nivel de estudiante de sexto semestre. Sin comentarios excesivos.
-9. **Web.config**: durante el desarrollo ambas cadenas usan `Data Source=.\SQL2019;User ID=sa;Password=123;TrustServerCertificate=True`. Para entregar se cambian a `Data Source=.` (solo cuando Jeremy lo indique).
+9. **Web.config**: para la entrega ambas cadenas usan `Data Source=.;User ID=sa;Password=123;TrustServerCertificate=True`, conforme a la configuración académica autorizada por el grupo.
    - `DefaultConnection` → `AerolineaVIP_Identity`
    - `AerolineaVIPEntities` → `AerolineaVIP`
 
@@ -84,31 +84,28 @@ Implementado en esta FASE 3: resultados y disponibilidad mediante las vistas SQL
 
 Verificación reproducible: `Pruebas/FlujoCompra.Integracion.ps1 -BaseUrl http://localhost:59817` con la aplicación en ejecución. Lee las cadenas locales de Web.config, usa las cuentas académicas iniciales, crea registros temporales y los elimina al finalizar. Cubre recuperación, tarifas, condiciones, datos opcionales, validaciones de tarjeta, reenvíos, pagos, numeración de comprobantes, expiración y venta dominical. El grupo autorizó expresamente incluir Web.config con `Data Source=.` y la cuenta académica local `sa/123` en el commit de FASE 3; no autorizó push.
 
-| Fase | Contenido | Estado |
+| Fase solicitada | Contenido | Estado |
 |---|---|---|
-| 1 | Identity: cadenas de conexión, inicializador nulo, ApplicationUser con Nombres/Apellidos, login por usuario, registro con rol seguro, siembra de roles y usuarios | **Terminada y probada** |
-| 2 | Layout y menú por rol (mapa 11.4.2), Home (pantalla 1), Buscar (pantalla 5), redirección por rol tras el login, área Admin: pantallas 17–21 y CRUD de Aeropuerto, Ruta, Frecuencia, Aeronave, Vuelo, Itinerario, TramoItinerario y Pasajero; catálogos en solo lectura | **Terminada** |
-| 3 | Pantalla 6 Resultados (vuelos e itinerario de Galápagos según la fecha) y pantalla 7 Disponibilidad con mapa de asientos. La acción `Vuelos/Resultados` ya valida los criterios y muestra una vista provisional | **Pendiente (siguiente)** |
-| 4 | Flujo de reserva (Cliente/EmpleadoCounter): 8 Selección de asiento, 9 Pasajeros, 10 Confirmar reserva (revalida disponibilidad, máx. 7) | Pendiente |
-| 5 | Compra y pago simulado: 11 Pagar (modal, sin datos sensibles), 12 Confirmación, comprobante | Pendiente |
-| 6 | Área del cliente: 13 Mis reservas, 14 Gestionar/cancelar, 15 Check-in, 16 Comprobantes. Hoy `Reservas`, `CheckIn` y `Comprobantes` son controladores provisionales con `Views/Shared/EnConstruccion.cshtml` | Pendiente |
-| 7 | Pantalla 4 (recuperación de acceso con mensaje neutral) y área de counter (Asistencia) | Pendiente |
-| 8 | Cierre: revisión de reglas, compilación 0 errores, `Data Source=.` (cuando Jeremy lo indique), ZIP sin bin/obj/packages con el script SQL | Pendiente |
-
+| 1 | Identity, login, registro, roles y usuarios iniciales | Terminada y probada por el grupo |
+| 2 | Layout, navegación por rol y administración | Terminada y probada por el grupo |
+| 3 | Pantallas 4–12, compra y políticas DP solicitadas | Terminada y probada por el grupo |
+| 4 | Pantallas 13–16 y Asistencia del counter | Terminada y probada por el grupo |
+| 5 | Revisión final, auditoría Razor, compilación, pruebas y fuentes para entrega | Revisión realizada; ver Documentacion/Revision_Final.md |
 ### Checklist de los 12 entregables del ZIP
-1. Home/Index con diseño propio — hecho.
-2. Superusuario creado por código — hecho.
-3. Administrador creado por código con acceso limitado a sus CRUD — hecho.
-4. Roles creados por código en Global.asax.cs — hecho.
-5. Usuarios iniciales creados por código — hecho.
-6. Roles asignados a los usuarios iniciales por código — hecho.
-7. CRUD con scaffolding para las tablas administrables — hecho.
-8. Login con nombre de usuario y contraseña — hecho.
-9. Registro con nombre de usuario, correo, contraseña y selección de rol — hecho.
-10. Las 21 interfaces del 11.4.5 — hechas 1, 2, 3, 5, 17, 18, 19, 20, 21; faltan 4 y 6–16.
-11. Mapa de navegación del 11.4.2 — menú listo; faltan las pantallas de cliente y counter.
-12. Integración de la BD, datos iniciales y funcionalidades del alcance — parcial.
+1. Home/Index con diseño propio — completo.
+2. Superusuario creado por código — completo.
+3. Administrador creado por código con acceso limitado — completo.
+4. Roles creados por código — completo.
+5. Usuarios iniciales creados por código — completo.
+6. Roles asignados por código — completo.
+7. CRUD de las tablas administrables y catálogos de solo lectura — completo.
+8. Login con nombre de usuario y contraseña — completo.
+9. Registro con usuario, correo, contraseña y rol protegido en servidor — completo.
+10. Las 21 interfaces — implementadas según el resumen disponible; ver tabla de rutas reales en Documentacion/Revision_Final.md.
+11. Mapa de navegación por roles — revisado; corregidos retorno desde login y accesos de cliente del SuperUsuario.
+12. Integración de base de datos y funcionalidades — flujos integrados y probados; DP-02 conserva asignación manual por el Administrador, sin automatización del plan propuesto.
 
+Los PDF oficiales no están en el repositorio: no se afirma una comparación literal con sus wireframes. El informe final incluye evidencia y pendientes por entregable.
 ## Decisiones pendientes DP-01 a DP-15 (apartado 18.1)
 
 Las políticas están redactadas en el PDF de documentación del grupo. Son **propuestas del grupo, pendientes de aprobación**: ninguna se presenta como aprobada. El código debe seguirlas; la última columna indica qué falta implementar.
@@ -117,17 +114,17 @@ Las políticas están redactadas en el PDF de documentación del grupo. Son **pr
 |---|---|---|
 | DP-01 Aeropuerto de Galápagos | Galápagos = aeropuerto GPS, editable en la tabla Aeropuerto. | Hecho (CRUD Aeropuertos). |
 | DP-02 Asignación de los jets | AV-01: Quito–Guayaquil 09:00 y 14:00 + ruta dominical. AV-02: Quito–Manta 09:00 y 14:00. AV-03: vuelos de 19:00 y reserva. | El administrador asigna en la pantalla 18; falta aplicar el plan a los vuelos generados. |
-| DP-03 Tiempos de preparación | 60 min de preparación entre la llegada y la siguiente salida de la misma aeronave, que debe salir del aeropuerto de llegada (`MinutosPreparacion=60` en Web.config). | **Pendiente**: agregar `MinutosPreparacion` en appSettings y validarlo al asignar aeronave (hoy solo valida superposición, trigger 50004). |
-| DP-04 Tarifas y moneda | USD; tarifa por pasajero y tramo desde `Ruta.TarifaReferencial`, copiada a `ImporteTramo` al confirmar; el importe se calcula en el servidor. | Pendiente (fase 4, confirmar reserva). |
-| DP-05 Impuestos y comprobantes | Comprobantes académicos CONFIRMACION, FACTURA (`ACAD-xxxxxx`) y NOTA_CREDITO; sin impuestos. | Pendiente (fases 5–6). |
-| DP-06 Proveedor de pagos | Pago simulado; se rechaza si la tarjeta termina en 0000; se guarda solo marca, últimos 4 dígitos, titular y el código `SIM-<CodigoReserva>-<intento>`. | Pendiente (fase 5). |
-| DP-07 Duración de reserva pendiente | Retención = la menor entre creación + 24 h y salida del primer tramo − 2 h. Las vencidas pasan a EXPIRADA y sus asientos a LIBERADA al consultar. | Pendiente (fases 4 y 6). |
-| DP-08 Cancelaciones y reembolsos | Pendiente: se cancela sin costo. Pagada: hasta 24 h antes, con reembolso simulado del 80 % (compra ANULADA, pago REVERSADO, nota de crédito). Dentro de las 24 h no se cancela por web. Vuelo cancelado por la aerolínea: reembolso del 100 % por el administrador. Siempre se cancela la reserva completa. | Pendiente (fase 6). Hoy las reservas con operaciones no se pueden eliminar. |
-| DP-09 Venta por tramos | En domingo solo se venden el itinerario de ida (tramos 1–2) y el de regreso (tramos 3–4), sin tramos sueltos. | Parcial: Home y Buscar muestran Galápagos solo con escala; falta aplicarlo en Resultados (fase 3). |
-| DP-10 Conexión en Guayaquil | Conexión en GYE de mínimo 60 min y con la misma aeronave en ambos tramos. | **Por ajustar**: `Ruta.ObtenerDestinos` hoy acepta cualquier salida posterior a la llegada (0 min) y no compara aeronaves. Corregir en la fase 3. |
+| DP-03 Tiempos de preparación | 60 min de preparación entre la llegada y la siguiente salida de la misma aeronave, que debe salir del aeropuerto de llegada (`MinutosPreparacion=60` en Web.config). | Implementado: MinutosPreparacion=60 y validación de preparación y continuidad en pantalla 18. |
+| DP-04 Tarifas y moneda | USD; tarifa por pasajero y tramo desde `Ruta.TarifaReferencial`, copiada a `ImporteTramo` al confirmar; el importe se calcula en el servidor. | Implementado: tarifas en servidor e ImporteTramo persistido al reservar. |
+| DP-05 Impuestos y comprobantes | Comprobantes académicos CONFIRMACION, FACTURA (`ACAD-xxxxxx`) y NOTA_CREDITO; sin impuestos. | Implementado: CNF, ACAD y NC con importes de operación o reembolso; sin impuestos. |
+| DP-06 Proveedor de pagos | Pago simulado; se rechaza si la tarjeta termina en 0000; se guarda solo marca, últimos 4 dígitos, titular y el código `SIM-<CodigoReserva>-<intento>`. | Implementado: simulación, rechazo 0000, datos mínimos y código SIM con intento de dos dígitos. |
+| DP-07 Duración de reserva pendiente | Retención = la menor entre creación + 24 h y salida del primer tramo − 2 h. Las vencidas pasan a EXPIRADA y sus asientos a LIBERADA al consultar. | Implementado: retención y expiración al consultar con liberación de asientos. |
+| DP-08 Cancelaciones y reembolsos | Pendiente: se cancela sin costo. Pagada: hasta 24 h antes, con reembolso simulado del 80 % (compra ANULADA, pago REVERSADO, nota de crédito). Dentro de las 24 h no se cancela por web. Vuelo cancelado por la aerolínea: reembolso del 100 % por el administrador. Siempre se cancela la reserva completa. | Implementado: cancelación completa, reversión 80 % o 100 % y nota de crédito en una transacción. |
+| DP-09 Venta por tramos | En domingo solo se venden el itinerario de ida (tramos 1–2) y el de regreso (tramos 3–4), sin tramos sueltos. | Implementado: domingo solo pares de tramos 1–2 o 3–4 de itinerarios activos. |
+| DP-10 Conexión en Guayaquil | Conexión en GYE de mínimo 60 min y con la misma aeronave en ambos tramos. | Implementado: conexión en GYE de 60 minutos como mínimo y misma aeronave. |
 | DP-11 Configuración de asientos | Asientos 1D, 2D, 2I, 3D, 3I, 4D, 4I. | Hecho (tabla Asiento y vista `vw_AsientoAeronave`). |
-| DP-12 Política de check-in | Abre 24 h y cierra 1 h antes de cada tramo; solo asientos CONFIRMADA; se busca por código de reserva + documento; el counter puede anular un check-in. | Pendiente (fase 6). La BD ya exige asiento CONFIRMADA (trigger 50031). |
-| DP-13 Funciones del counter | El counter busca reservas, reserva y paga en nombre de un cliente con cuenta (se guarda el `UsuarioId` del cliente), registra pasajeros, hace check-in, emite comprobantes y cancela reservas pendientes. No administra vuelos, aeronaves, tarifas, usuarios ni roles, ni cancela reservas pagadas. | Pendiente (fase 7). Hoy tiene el menú del cliente + "Asistencia" provisional y no entra al área Admin. |
+| DP-12 Política de check-in | Abre 24 h y cierra 1 h antes de cada tramo; solo asientos CONFIRMADA; se busca por código de reserva + documento; el counter puede anular un check-in. | Implementado: ventana 24 h–1 h, asiento confirmado, unicidad y anulación por counter. |
+| DP-13 Funciones del counter | El counter busca reservas, reserva y paga en nombre de un cliente con cuenta (se guarda el `UsuarioId` del cliente), registra pasajeros, hace check-in, emite comprobantes y cancela reservas pendientes. No administra vuelos, aeronaves, tarifas, usuarios ni roles, ni cancela reservas pagadas. | Implementado: Asistencia, compra para Cliente, pago y check-in; counter solo cancela pendientes y no entra a Admin. |
 | DP-14 Recuperación y disponibilidad | Fuera del alcance de la primera entrega. | — |
 | DP-15 Normativa aplicable | Fuera del alcance de la primera entrega; no se afirma cumplimiento normativo. | — |
 

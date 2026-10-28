@@ -1,6 +1,6 @@
 ﻿@using AerolineaVIP.Models
-@model ManageLoginsViewModel
 @using Microsoft.Owin.Security
+@model ManageLoginsViewModel
 @{
     ViewBag.Title = "Administre sus inicios de sesión externos";
 }
@@ -10,8 +10,7 @@
 
     <p class="text-success">@ViewBag.StatusMessage</p>
     @{
-        var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
-        if (loginProviders.Count() == 0) {
+        if (!Model.TieneProveedores) {
             <div>
                 <p>
                     No existen servicios de autenticación externos configurados. Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=313242">este artículo</a>

@@ -3,7 +3,7 @@
 Sistema web monolítico para la compra, reserva y administración de pasajes de una aerolínea VIP.
 ASP.NET MVC 5 · .NET Framework 4.8.1 · Razor · Bootstrap · jQuery · ASP.NET Identity · SQL Server.
 
-**Autor:** Jeremy Vilaña
+**Autores:** Jeremy Alexander Vilaña Guamán y Amaro Benjamin Caiza Sandoval
 
 ## Requisitos
 
@@ -37,6 +37,12 @@ El inicio de sesión es con **nombre de usuario**. El registro público siempre 
 ## Antes de entregar
 
 En `Web.config` las dos cadenas de conexión deben quedar con **`Data Source=.`**.
+
+La revisión de los 12 entregables, la tabla de las 21 pantallas con rutas reales y el mapa de navegación están en [Documentacion/Revision_Final.md](Documentacion/Revision_Final.md). El inventario de las 105 vistas revisadas está en [Documentacion/Inventario_Vistas.md](Documentacion/Inventario_Vistas.md). Puede repetir la auditoría con `Pruebas\RevisionEntrega.ps1`.
+
+El cierre compila también las vistas Razor y ejecuta ambas integraciones, más `Pruebas\Navegacion.Integracion.ps1`. Para preparar y verificar un ZIP de fuentes use `Pruebas\PrepararEntrega.ps1 -Destino ruta-nueva.zip`; no sobrescribe archivos existentes y compara por SHA-256 cada archivo empaquetado.
+
+El ZIP de fuentes excluye `.git`, `.vs`, `bin`, `obj` y `packages`; antes de compilar una copia extraída restaure NuGet. La asignación de aeronaves del plan propuesto DP-02 sigue siendo manual por el Administrador; no se automatiza al generar vuelos. Los PDF oficiales no están incluidos en el repositorio y no se afirma un contraste literal con ellos.
 
 ## Más información
 

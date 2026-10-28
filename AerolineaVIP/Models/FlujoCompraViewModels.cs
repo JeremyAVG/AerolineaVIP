@@ -33,6 +33,7 @@ namespace AerolineaVIP.Models
     [Serializable]
     public class PasajeroCompra : IValidatableObject
     {
+        public IEnumerable<System.Web.Mvc.SelectListItem> TiposDocumento { get { return Pasajero.TiposDocumento(TipoDocumento); } }
         [Required, RegularExpression("^(CEDULA|PASAPORTE)$")]
         public string TipoDocumento { get; set; }
         [Required, RegularExpression("^[A-Za-z0-9]{5,20}$")]

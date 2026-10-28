@@ -1,12 +1,10 @@
 ﻿@using AerolineaVIP.Models
-@model ExternalLoginListViewModel
 @using Microsoft.Owin.Security
-
+@model ExternalLoginListViewModel
 <h4>Utilice otro servicio para iniciar sesión.</h4>
 <hr />
 @{
-    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
-    if (loginProviders.Count() == 0) {
+    if (Model.Proveedores.Count == 0) {
         <div>
             <p>
                 No existen servicios de autenticación externos configurados. Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
@@ -19,7 +17,7 @@
             @Html.AntiForgeryToken()
             <div id="socialLoginList">
                 <p>
-                    @foreach (AuthenticationDescription p in loginProviders) {
+                    @foreach (AuthenticationDescription p in Model.Proveedores) {
                         <button type="submit" class="btn btn-outline-dark" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Inicie sesión con su cuenta @p.Caption">@p.AuthenticationType</button>
                     }
                 </p>

@@ -66,6 +66,10 @@ namespace AerolineaVIP.Models
 
     public class UsuarioGestion
     {
+        public IEnumerable<System.Web.Mvc.SelectListItem> ListaRoles
+        {
+            get { return RolesSistema.Todos.Select(r => new System.Web.Mvc.SelectListItem { Value = r, Text = r, Selected = r == Rol }); }
+        }
         public string Id { get; set; }
         public string UserName { get; set; }
         public string NombreCompleto { get; set; }
